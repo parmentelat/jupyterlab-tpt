@@ -6,14 +6,18 @@ import {
 //import {ICommandPalette, MainAreaWidget } from '@jupyterlab/apputils';
 import {ICommandPalette } from '@jupyterlab/apputils';
 
-/* import {
-  see https://github.com/jupyterlab/jupyterlab/issues/2872
-  INotebookModel,
-  // INotebookTracker,
+import {
+   INotebookTracker, // NotebookPanel,
+  // INotebookModel,
   // Notebook,
-  // NotebookPanel
+  // ICellModel,
 } from '@jupyterlab/notebook';
- */
+
+
+/* function foo(cell: ICellModel) {
+  console.log("in foo with cell = ", cell)
+  cell 
+} */
 
 //import { Widget } from '@lumino/widgets';
 
@@ -23,8 +27,8 @@ import {ICommandPalette } from '@jupyterlab/apputils';
 const plugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-tpt:plugin',
   autoStart: true,
-  requires: [ICommandPalette],
-  activate: (app: JupyterFrontEnd, palette: ICommandPalette) => {
+  requires: [ICommandPalette, INotebookTracker],
+  activate: (app: JupyterFrontEnd, palette: ICommandPalette, tracker: INotebookTracker) => {
     console.log('JupyterLab extension jupyterlab-tpt is activated!');
     console.log('ICommandPalette', palette);
 
@@ -36,7 +40,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
       isVisible: () => true,
       iconClass: 'some-css-icon-class',
       execute: () => {
-        console.log("in my fake command")
+        console.log("in my fake command:", "app", app, "palette ", palette, "tracker", tracker)
+        const panel /*: NotebookPanel*/ = tracker.currentWidget
+        if (panel === null)
+          return
+        console.log("activeCell", tracker.activeCell)
+        console.log("panel", panel)
+        // 
       },
     })
 
