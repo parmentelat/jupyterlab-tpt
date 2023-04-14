@@ -4,10 +4,10 @@ import {
 } from '@jupyterlab/application';
 
 //import {ICommandPalette, MainAreaWidget } from '@jupyterlab/apputils';
-import {ICommandPalette } from '@jupyterlab/apputils';
+import { ICommandPalette } from '@jupyterlab/apputils';
 
 import {
-   INotebookTracker, // NotebookPanel,
+  INotebookTracker, // NotebookPanel,
   // INotebookModel,
   // Notebook,
   // ICellModel,
@@ -33,15 +33,15 @@ const set_hide_input = (cell: Cell, value: boolean) => {
   let tags = [] as Array<string>
   if (metadata.has('tags')) {
     tags = metadata.get('tags') as Array<string>
-    if (! tags)
+    if (!tags)
       tags = []
   }
   // set if not already
-  if (value && (! tags.includes('hide-input')))
+  if (value && (!tags.includes('hide-input')))
     tags.push('hide-input')
   // unset if currently set
   else if (!value && (tags.includes('hide-input')))
-    tags = tags.filter( (item) => item != "hide-input")
+    tags = tags.filter((item) => item != "hide-input")
   console.log('setting new tags', tags)
   metadata.set('tags', tags)
 }
@@ -68,18 +68,23 @@ const plugin: JupyterFrontEndPlugin<void> = {
       iconClass: 'some-css-icon-class',
       execute: () => {
         console.log("in my fake command:")
-        console.log("app", app)
-        console.log("palette ", palette)
         const panel /*: NotebookPanel*/ = notebookTracker.currentWidget
-        console.log("panel", panel)
+        // console.log("panel", panel)
         if (panel === null)
           return
-        console.log("tracker", notebookTracker)
+        // active cell
         const activeCell = notebookTracker.activeCell
-        console.log("activeCell", activeCell)
-        if (activeCell == null)
+        if (activeCell === null)
           return
-        set_hide_input(activeCell, true)
+        const notebook = panel.content
+        const { anchor, head } = notebook.getContiguousSelection()
+        let actionCells
+        if (anchor === null || head === null)
+          actionCells = [activeCell]
+        else
+          actionCells = notebook.widgets.slice(anchor, head + 1)
+
+        actionCells.forEach( (cell) => set_hide_input(cell, true))
       }
     })
 
@@ -90,7 +95,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       selector: ".jp-Notebook",
     })
 
-    palette.addItem({command, category: 'Tuto'})
+    palette.addItem({ command, category: 'Tuto' })
 
     notebookTracker.widgetAdded.connect((tracker, panel) => {
       const notebook = panel.content
