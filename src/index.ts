@@ -13,13 +13,39 @@ import {
   // ICellModel,
 } from '@jupyterlab/notebook';
 
+import {
+  CodeCellModel,
+  // ICellModel,
+  // ICodeCellModel
+  Cell,
+} from "@jupyterlab/cells";
 
 /* function foo(cell: ICellModel) {
   console.log("in foo with cell = ", cell)
-  cell 
+  cell
 } */
 
 //import { Widget } from '@lumino/widgets';
+
+const set_hide_input = (cell: Cell, value: boolean) => {
+  const metadata = cell.model.metadata
+  metadata.set("hide_input", value)
+  let tags = [] as Array<string>
+  if (metadata.has('tags')) {
+    tags = metadata.get('tags') as Array<string>
+    if (! tags)
+      tags = []
+  }
+  // set if not already
+  if (value && (! tags.includes('hide-input')))
+    tags.push('hide-input')
+  // unset if currently set
+  else if (!value && (tags.includes('hide-input')))
+    tags = tags.filter( (item) => item != "hide-input")
+  console.log('setting new tags', tags)
+  metadata.set('tags', tags)
+}
+
 
 /**
  * Initialization data for the jupyterlab-tpt extension.
@@ -28,9 +54,10 @@ const plugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-tpt:plugin',
   autoStart: true,
   requires: [ICommandPalette, INotebookTracker],
-  activate: (app: JupyterFrontEnd, palette: ICommandPalette, tracker: INotebookTracker) => {
-    console.log('JupyterLab extension jupyterlab-tpt is activated!');
-    console.log('ICommandPalette', palette);
+  activate: (app: JupyterFrontEnd, palette: ICommandPalette, notebookTracker: INotebookTracker) => {
+    console.log('JupyterLab extension jupyterlab-tpt is activated !')
+    console.log('ICommandPalette', palette)
+    console.log('INotebookTracker', notebookTracker)
 
     const command: string = "MINE:fake-command"
 
@@ -40,14 +67,20 @@ const plugin: JupyterFrontEndPlugin<void> = {
       isVisible: () => true,
       iconClass: 'some-css-icon-class',
       execute: () => {
-        console.log("in my fake command:", "app", app, "palette ", palette, "tracker", tracker)
-        const panel /*: NotebookPanel*/ = tracker.currentWidget
+        console.log("in my fake command:")
+        console.log("app", app)
+        console.log("palette ", palette)
+        const panel /*: NotebookPanel*/ = notebookTracker.currentWidget
+        console.log("panel", panel)
         if (panel === null)
           return
-        console.log("activeCell", tracker.activeCell)
-        console.log("panel", panel)
-        // 
-      },
+        console.log("tracker", notebookTracker)
+        const activeCell = notebookTracker.activeCell
+        console.log("activeCell", activeCell)
+        if (activeCell == null)
+          return
+        set_hide_input(activeCell, true)
+      }
     })
 
     app.commands.addKeyBinding({
@@ -57,7 +90,24 @@ const plugin: JupyterFrontEndPlugin<void> = {
       selector: ".jp-Notebook",
     })
 
-    palette.addItem( {command, category: 'Tuto'})
+    palette.addItem({command, category: 'Tuto'})
+
+    notebookTracker.widgetAdded.connect((tracker, panel) => {
+      const notebook = panel.content
+      const notebookModel = notebook.model
+      if (notebookModel === null) { return }
+      notebookModel.cells.changed.connect((_, change) => {
+        console.log('changed!', change)
+        if (change.type == 'remove') { return }
+        if (change.type == 'add') {
+          const newCell = change.newValues[0]
+          const isCode = newCell instanceof CodeCellModel
+          console.log("added", newCell, 'code cell', isCode)
+
+        }
+
+      })
+    })
   }
 };
 

@@ -74,3 +74,24 @@ folder is located. Then you can remove the symlink named `jupyterlab-tpt` within
 ### Packaging the extension
 
 See [RELEASE](RELEASE.md)
+
+# My notes
+
+* on using signals
+  <https://github.com/jupyterlab/extension-examples/tree/master/signals>
+
+* a very useful example of arming callbacks on changes
+  // https://discourse.jupyter.org/t/how-to-get-output-model-for-a-given-cell-in-a-jupyterlab-extension/11342/6
+
+* waiting for a notebook context to be ready
+  ```js
+  notebookContext: DocumentRegistry.IContext<INotebookModel>
+  notebookContext.ready.then(() => {
+    /*
+     * The order of operations here is key. First, create a model that contains a log of
+     * executed cells and the state of the gather UI.
+     */
+    let notebookModel = notebookContext.model;
+    ...
+  })
+  ```
