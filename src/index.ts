@@ -79,7 +79,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     console.log('ICommandPalette', palette)
     console.log('INotebookTracker', notebookTracker)
 
-    const command: string = "MINE:set-hide-input"
+    const command: string = "set-hide-input"
 
     app.commands.addCommand(command, {
       label: 'dummy test',
