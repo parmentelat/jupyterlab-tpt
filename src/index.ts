@@ -20,12 +20,32 @@ import {
   Cell,
 } from "@jupyterlab/cells";
 
-/* function foo(cell: ICellModel) {
-  console.log("in foo with cell = ", cell)
-  cell
-} */
-
 //import { Widget } from '@lumino/widgets';
+
+////
+const apply_on_selected_or_active_cells = (
+  notebookTracker: INotebookTracker,
+  to_apply: (cell: Cell) => void,
+) => {
+  const panel = notebookTracker.currentWidget
+  // please typescript
+  if (panel === null)
+    return
+  const activeCell = notebookTracker.activeCell
+  // please typescript
+  if (activeCell === null)
+    return
+  const notebook = panel.content
+  const { anchor, head } = notebook.getContiguousSelection()
+  let actionCells
+  // when only one cell is selected/active, both are null
+  if (anchor === null || head === null)
+    actionCells = [activeCell]
+  else
+    actionCells = notebook.widgets.slice(anchor, head + 1)
+  actionCells.forEach(to_apply)
+}
+
 
 const set_hide_input = (cell: Cell, value: boolean) => {
   const metadata = cell.model.metadata
@@ -67,25 +87,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
       isVisible: () => true,
       iconClass: 'some-css-icon-class',
       execute: (args: any) => {
-        console.log(`in my fake command: args=`, args)
         const { value } = args
-        const panel /*: NotebookPanel*/ = notebookTracker.currentWidget
-        // console.log("panel", panel)
-        if (panel === null)
-          return
-        // active cell
-        const activeCell = notebookTracker.activeCell
-        if (activeCell === null)
-          return
-        const notebook = panel.content
-        const { anchor, head } = notebook.getContiguousSelection()
-        let actionCells
-        if (anchor === null || head === null)
-          actionCells = [activeCell]
-        else
-          actionCells = notebook.widgets.slice(anchor, head + 1)
-        console.log(`applying set_hide_input (${value}) to ${actionCells.length} cells`)
-        actionCells.forEach( (cell) => set_hide_input(cell, value))
+        apply_on_selected_or_active_cells(notebookTracker,
+          (cell) => set_hide_input(cell, value))
       }
     })
 
