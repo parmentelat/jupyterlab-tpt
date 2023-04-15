@@ -47,9 +47,9 @@ const apply_on_selected_or_active_cells = (
 }
 
 
-const set_hide_input = (cell: Cell, value: boolean) => {
+const set_hide_input = (cell: Cell, hidden: boolean) => {
   const metadata = cell.model.metadata
-  metadata.set("hide_input", value)
+  metadata.set("hide_input", hidden)
   let tags = [] as Array<string>
   if (metadata.has('tags')) {
     tags = metadata.get('tags') as Array<string>
@@ -57,10 +57,10 @@ const set_hide_input = (cell: Cell, value: boolean) => {
       tags = []
   }
   // set if not already
-  if (value && (!tags.includes('hide-input')))
+  if (hidden && (!tags.includes('hide-input')))
     tags.push('hide-input')
   // unset if currently set
-  else if (!value && (tags.includes('hide-input')))
+  else if (!hidden && (tags.includes('hide-input')))
     tags = tags.filter((item) => item != "hide-input")
   console.log('setting new tags', tags)
   metadata.set('tags', tags)
@@ -87,15 +87,15 @@ const plugin: JupyterFrontEndPlugin<void> = {
       isVisible: () => true,
       iconClass: 'some-css-icon-class',
       execute: (args: any) => {
-        const { value } = args
+        const { hidden } = args
         apply_on_selected_or_active_cells(notebookTracker,
-          (cell) => set_hide_input(cell, value))
+          (cell) => set_hide_input(cell, hidden))
       }
     })
 
     app.commands.addKeyBinding({
       command: command,
-      args: {value: true},
+      args: {hidden: true},
       keys: ['Ctrl 9'],
       selector: ".jp-Notebook",
     })
