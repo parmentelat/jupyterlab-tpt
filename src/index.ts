@@ -66,8 +66,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
       isEnabled: () => true,
       isVisible: () => true,
       iconClass: 'some-css-icon-class',
-      execute: () => {
-        console.log("in my fake command:")
+      execute: (args: any) => {
+        console.log(`in my fake command: args=`, args)
+        const { value } = args
         const panel /*: NotebookPanel*/ = notebookTracker.currentWidget
         // console.log("panel", panel)
         if (panel === null)
@@ -83,14 +84,14 @@ const plugin: JupyterFrontEndPlugin<void> = {
           actionCells = [activeCell]
         else
           actionCells = notebook.widgets.slice(anchor, head + 1)
-
-        actionCells.forEach( (cell) => set_hide_input(cell, true))
+        console.log(`applying set_hide_input (${value}) to ${actionCells.length} cells`)
+        actionCells.forEach( (cell) => set_hide_input(cell, value))
       }
     })
 
     app.commands.addKeyBinding({
       command: command,
-      args: {},
+      args: {value: true},
       keys: ['Ctrl 9'],
       selector: ".jp-Notebook",
     })
