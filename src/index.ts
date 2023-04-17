@@ -126,6 +126,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
     // also we could pass args to execute, but in the hide-input case
     // it does not work well as we need distinct labels depending on the args
 
+    // https://lumino.readthedocs.io/en/1.x/api/commands/interfaces/commandregistry.ikeybindingoptions.html
+    // The supported modifiers are: Accel, Alt, Cmd, Ctrl, and Shift. The Accel
+    // modifier is translated to Cmd on Mac and Ctrl on all other platforms. The
+    // Cmd modifier is ignored on non-Mac platforms.
+    // Alt is option on mac
+
     let command
 
     command = 'hide-input'
@@ -133,7 +139,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: command,
       execute: () => apply_on_cells(notebookTracker, true, (cell) => set_hide_input(cell, true))
     })
-    app.commands.addKeyBinding({command, keys: ['Accel Alt 9'], selector: ".jp-Notebook"})
+    app.commands.addKeyBinding({command, keys: ['Alt Cmd 9'], selector: ".jp-Notebook"})
     palette.addItem({command, category: 'Convenience'})
 
     command = 'show-input'
@@ -141,7 +147,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: command,
       execute: () => apply_on_cells(notebookTracker, true, (cell) => set_hide_input(cell, false))
     })
-    app.commands.addKeyBinding({command, keys: ['Alt Ctrl 9'],  selector: ".jp-Notebook"})
+    app.commands.addKeyBinding({command, keys: ['Ctrl Alt 9'],  selector: ".jp-Notebook"})
     palette.addItem({command, category: 'Convenience'})
 
 
@@ -150,7 +156,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: command,
       execute: () => apply_on_cells(notebookTracker, false, (cell) => set_hide_input_needle(cell, true))
     })
-    app.commands.addKeyBinding({command, keys: ['Accel Alt 8'], selector: ".jp-Notebook"})
+    app.commands.addKeyBinding({command, keys: ['Alt Cmd 8'], selector: ".jp-Notebook"})
     palette.addItem({command, category: 'Convenience'})
 
     command = 'all-samples-show-input'
