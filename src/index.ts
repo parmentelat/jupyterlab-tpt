@@ -16,7 +16,7 @@ import {
 } from '@jupyterlab/notebook';
 
 import {
-  CodeCellModel,
+  CodeCell,
   // ICellModel,
   // ICodeCellModel
   Cell,
@@ -26,29 +26,37 @@ import {
 
 
 /*
-the logic of applying a function on all selected cells if relevant
-or the active cell otherwise
+the logic of applying a function on a set of cells
+if on_selected is false
+  then to_apply is called on all cells in the notebook
+if on_selected is true
+  then to_apply is called on all selected cells, or the active cell
+  if no multiple selection was made
  */
-const apply_on_selected_or_active_cells = (
+const apply_on_cells = (
   notebookTracker: INotebookTracker,
+  on_selected: boolean,
   to_apply: (cell: Cell) => void,
 ) => {
-  const panel = notebookTracker.currentWidget
-  // please typescript
-  if (panel === null) { return }
-  const activeCell = notebookTracker.activeCell
-  // please typescript
-  if (activeCell === null) { return }
-  const notebook = panel.content
-  const { anchor, head } = notebook.getContiguousSelection()
+  const notebook = notebookTracker.currentWidget?.content
+  if (notebook === undefined) { return }
+
   let actionCells
-  // when only one cell is selected/active, both are null
-  if (anchor === null || head === null) {
-    actionCells = [activeCell]
+  if (! on_selected) {
+    actionCells = notebook.widgets.slice()
   } else {
-    actionCells = notebook.widgets.slice(anchor, head + 1)
+    const activeCell = notebook.activeCell
+    if (activeCell === null) { return }
+
+    const { anchor, head } = notebook.getContiguousSelection()
+    // when only one cell is selected/active, both are null
+    if (anchor === null || head === null) {
+      actionCells = [activeCell]
+    } else {
+      actionCells = notebook.widgets.slice(anchor, head + 1)
+    }
   }
-  actionCells.forEach(to_apply)
+   actionCells.forEach(to_apply)
 }
 
 
@@ -84,6 +92,21 @@ const set_hide_input = (cell: Cell, hidden: boolean) => {
 }
 
 
+// this is specific to the web course, where we use a toolset with functions
+// that have this in their name
+const NEEDLE = 'tools.sample_from'
+
+const set_hide_input_needle = (cell: Cell, hidden: boolean) => {
+  // ignore text cells
+  if (cell instanceof CodeCell) {
+    // need to access the cell model
+    const model = cell.model
+    if (model.value.text.toLowerCase().indexOf(NEEDLE) !== -1) {
+      set_hide_input(cell, hidden)
+    }
+  }
+}
+
 /**
  * Initialization data for the jupyterlab-tpt extension.
  */
@@ -108,7 +131,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     command = 'hide-input'
     app.commands.addCommand(command, {
       label: command,
-      execute: () => apply_on_selected_or_active_cells(notebookTracker, (cell) => set_hide_input(cell, true))
+      execute: () => apply_on_cells(notebookTracker, true, (cell) => set_hide_input(cell, true))
     })
     app.commands.addKeyBinding({command, keys: ['Accel Alt 9'], selector: ".jp-Notebook"})
     palette.addItem({command, category: 'Convenience'})
@@ -116,20 +139,27 @@ const plugin: JupyterFrontEndPlugin<void> = {
     command = 'show-input'
     app.commands.addCommand(command, {
       label: command,
-      execute: () => apply_on_selected_or_active_cells(notebookTracker, (cell) => set_hide_input(cell, false))
+      execute: () => apply_on_cells(notebookTracker, true, (cell) => set_hide_input(cell, false))
     })
     app.commands.addKeyBinding({command, keys: ['Alt Ctrl 9'],  selector: ".jp-Notebook"})
     palette.addItem({command, category: 'Convenience'})
 
 
-    // command = 'all-samples-hide-input'
-    // app.commands.addCommand(command, {
-    //   label: command,
-    //   execute: () => set_all_samples_hide_input(notebookTracker, true)
-    // })
-    // app.commands.addKeyBinding({command, keys: ['Accel Alt 8'], selector: ".jp-Notebook"})
-    // palette.addItem({command, category: 'Convenience'})
+    command = 'all-samples-hide-input'
+    app.commands.addCommand(command, {
+      label: command,
+      execute: () => apply_on_cells(notebookTracker, false, (cell) => set_hide_input_needle(cell, true))
+    })
+    app.commands.addKeyBinding({command, keys: ['Accel Alt 8'], selector: ".jp-Notebook"})
+    palette.addItem({command, category: 'Convenience'})
 
+    command = 'all-samples-show-input'
+    app.commands.addCommand(command, {
+      label: command,
+      execute: () => apply_on_cells(notebookTracker, false, (cell) => set_hide_input_needle(cell, false))
+    })
+    app.commands.addKeyBinding({command, keys: ['Ctrl Alt 8'], selector: ".jp-Notebook"})
+    palette.addItem({command, category: 'Convenience'})
 
 
     notebookTracker.widgetAdded.connect((tracker, panel) => {
@@ -137,13 +167,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
       const notebookModel = notebook.model
       if (notebookModel === null) { return }
       notebookModel.cells.changed.connect((_, change) => {
-        console.log('changed!', change)
+        // console.log('changed!', change)
         if (change.type == 'remove') { return }
         if (change.type == 'add') {
-          const newCell = change.newValues[0]
-          const isCode = newCell instanceof CodeCellModel
-          console.log("added", newCell, 'code cell', isCode)
-
+          // const newCell = change.newValues[0]
+          // const isCode = newCell instanceof CodeCellModel
+          // console.log("added", newCell, 'code cell', isCode)
         }
 
       })
