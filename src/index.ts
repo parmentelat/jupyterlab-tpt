@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+
 import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
@@ -22,47 +24,62 @@ import {
 
 //import { Widget } from '@lumino/widgets';
 
-////
+
+/*
+the logic of applying a function on all selected cells if relevant
+or the active cell otherwise
+ */
 const apply_on_selected_or_active_cells = (
   notebookTracker: INotebookTracker,
   to_apply: (cell: Cell) => void,
 ) => {
   const panel = notebookTracker.currentWidget
   // please typescript
-  if (panel === null)
-    return
+  if (panel === null) { return }
   const activeCell = notebookTracker.activeCell
   // please typescript
-  if (activeCell === null)
-    return
+  if (activeCell === null) { return }
   const notebook = panel.content
   const { anchor, head } = notebook.getContiguousSelection()
   let actionCells
   // when only one cell is selected/active, both are null
-  if (anchor === null || head === null)
+  if (anchor === null || head === null) {
     actionCells = [activeCell]
-  else
+  } else {
     actionCells = notebook.widgets.slice(anchor, head + 1)
+  }
   actionCells.forEach(to_apply)
 }
 
 
+/*
+in order to have consistent behaviour between
+classic notebook (with the hide-input extension enabled)
+and jupyter book, we manage consistently
+* the metadata.hide_input attribute
+* the 'hide-input' tag
+*/
 const set_hide_input = (cell: Cell, hidden: boolean) => {
   const metadata = cell.model.metadata
-  metadata.set("hide_input", hidden)
+  metadata.set('hide_input', hidden)
   let tags = [] as Array<string>
   if (metadata.has('tags')) {
     tags = metadata.get('tags') as Array<string>
-    if (!tags)
+    if (!tags) {
       tags = []
+    }
   }
-  // set if not already
-  if (hidden && (!tags.includes('hide-input')))
+  if (hidden && (!tags.includes('hide-input'))) {
+    // set if not already
     tags.push('hide-input')
-  // unset if currently set
-  else if (!hidden && (tags.includes('hide-input')))
-    tags = tags.filter((item) => item != "hide-input")
-  console.log('setting new tags', tags)
+  } else if (!hidden && (tags.includes('hide-input'))) {
+    // unset if currently set
+    tags = tags.filter((item) => item != 'hide-input')
+  } else {
+    // otherwise, nothing to do
+    return
+  }
+  // console.log('setting new tags', tags)
   metadata.set('tags', tags)
 }
 
@@ -75,32 +92,45 @@ const plugin: JupyterFrontEndPlugin<void> = {
   autoStart: true,
   requires: [ICommandPalette, INotebookTracker],
   activate: (app: JupyterFrontEnd, palette: ICommandPalette, notebookTracker: INotebookTracker) => {
-    console.log('JupyterLab extension jupyterlab-tpt is activated !')
-    console.log('ICommandPalette', palette)
-    console.log('INotebookTracker', notebookTracker)
+    console.log('JupyterLab extension jupyterlab-tpt is activating')
+    // console.log('ICommandPalette', palette)
+    // console.log('INotebookTracker', notebookTracker)
 
-    const command: string = "set-hide-input"
+    // the addCommand would accept the following
+    // isEnabled: () => true,
+    // isVisible: () => true,
+    // iconClass: 'some-css-icon-class',
+    // also we could pass args to execute, but in the hide-input case
+    // it does not work well as we need distinct labels depending on the args
 
+    let command
+
+    command = 'hide-input'
     app.commands.addCommand(command, {
-      label: 'dummy test',
-      isEnabled: () => true,
-      isVisible: () => true,
-      iconClass: 'some-css-icon-class',
-      execute: (args: any) => {
-        const { hidden } = args
-        apply_on_selected_or_active_cells(notebookTracker,
-          (cell) => set_hide_input(cell, hidden))
-      }
+      label: command,
+      execute: () => apply_on_selected_or_active_cells(notebookTracker, (cell) => set_hide_input(cell, true))
     })
+    app.commands.addKeyBinding({command, keys: ['Accel Alt 9'], selector: ".jp-Notebook"})
+    palette.addItem({command, category: 'Convenience'})
 
-    app.commands.addKeyBinding({
-      command: command,
-      args: {hidden: true},
-      keys: ['Ctrl 9'],
-      selector: ".jp-Notebook",
+    command = 'show-input'
+    app.commands.addCommand(command, {
+      label: command,
+      execute: () => apply_on_selected_or_active_cells(notebookTracker, (cell) => set_hide_input(cell, false))
     })
+    app.commands.addKeyBinding({command, keys: ['Alt Ctrl 9'],  selector: ".jp-Notebook"})
+    palette.addItem({command, category: 'Convenience'})
 
-    palette.addItem({ command, category: 'Tuto' })
+
+    // command = 'all-samples-hide-input'
+    // app.commands.addCommand(command, {
+    //   label: command,
+    //   execute: () => set_all_samples_hide_input(notebookTracker, true)
+    // })
+    // app.commands.addKeyBinding({command, keys: ['Accel Alt 8'], selector: ".jp-Notebook"})
+    // palette.addItem({command, category: 'Convenience'})
+
+
 
     notebookTracker.widgetAdded.connect((tracker, panel) => {
       const notebook = panel.content
