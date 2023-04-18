@@ -136,7 +136,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     command = 'hide-input'
     app.commands.addCommand(command, {
-      label: command,
+      label: 'hide input for all selected cells',
       execute: () => apply_on_cells(notebookTracker, true, (cell) => set_hide_input(cell, true))
     })
     app.commands.addKeyBinding({command, keys: ['Alt Cmd 9'], selector: ".jp-Notebook"})
@@ -144,7 +144,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     command = 'show-input'
     app.commands.addCommand(command, {
-      label: command,
+      label: 'show input for all selected cells',
       execute: () => apply_on_cells(notebookTracker, true, (cell) => set_hide_input(cell, false))
     })
     app.commands.addKeyBinding({command, keys: ['Ctrl Alt 9'],  selector: ".jp-Notebook"})
@@ -153,7 +153,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     command = 'all-samples-hide-input'
     app.commands.addCommand(command, {
-      label: command,
+      label: `hide input for all code cells that contain ${NEEDLE}`,
       execute: () => apply_on_cells(notebookTracker, false, (cell) => set_hide_input_needle(cell, true))
     })
     app.commands.addKeyBinding({command, keys: ['Alt Cmd 8'], selector: ".jp-Notebook"})
@@ -161,7 +161,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     command = 'all-samples-show-input'
     app.commands.addCommand(command, {
-      label: command,
+      label: `show input for all code cells that contain ${NEEDLE}`,
       execute: () => apply_on_cells(notebookTracker, false, (cell) => set_hide_input_needle(cell, false))
     })
     app.commands.addKeyBinding({command, keys: ['Ctrl Alt 8'], selector: ".jp-Notebook"})
