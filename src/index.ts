@@ -1,3 +1,8 @@
+/*
+ * for attaching keybindings later on, see
+ * https://towardsdatascience.com/how-to-customize-jupyterlab-keyboard-shortcuts-72321f73753d
+ */
+
 /* eslint-disable prettier/prettier */
 
 import {
@@ -9,16 +14,13 @@ import {
 import { ICommandPalette } from '@jupyterlab/apputils';
 
 import {
-  INotebookTracker, // NotebookPanel,
-  // INotebookModel,
-  // Notebook,
-  // ICellModel,
+  INotebookTracker, // NotebookPanel, // INotebookModel,
+  Notebook,
+  NotebookActions,
 } from '@jupyterlab/notebook';
 
 import {
-  CodeCell,
-  // ICellModel,
-  // ICodeCellModel
+  CodeCell, // ICellModel, // ICodeCellModel
   Cell,
 } from "@jupyterlab/cells";
 
@@ -33,27 +35,37 @@ if on_selected is true
   then to_apply is called on all selected cells, or the active cell
   if no multiple selection was made
  */
+enum Scope {
+  All,        // run on all cells
+  Active,     // the active cell only
+  Multiple,   // the multiple selected if that is the case, the active cell otherwise
+}
+
 const apply_on_cells = (
   notebookTracker: INotebookTracker,
-  on_selected: boolean,
+  scope: Scope,
   to_apply: (cell: Cell) => void,
 ) => {
   const notebook = notebookTracker.currentWidget?.content
   if (notebook === undefined) { return }
 
   let actionCells
-  if (! on_selected) {
+  if (scope === Scope.All) {
     actionCells = notebook.widgets.slice()
   } else {
     const activeCell = notebook.activeCell
     if (activeCell === null) { return }
 
-    const { anchor, head } = notebook.getContiguousSelection()
-    // when only one cell is selected/active, both are null
-    if (anchor === null || head === null) {
+    if (scope == Scope.Active) {
       actionCells = [activeCell]
     } else {
-      actionCells = notebook.widgets.slice(anchor, head + 1)
+      const { anchor, head } = notebook.getContiguousSelection()
+      // when only one cell is selected/active, both are null
+      if (anchor === null || head === null) {
+        actionCells = [activeCell]
+      } else {
+        actionCells = notebook.widgets.slice(anchor, head + 1)
+      }
     }
   }
    actionCells.forEach(to_apply)
@@ -107,6 +119,22 @@ const set_hide_input_needle = (cell: Cell, hidden: boolean) => {
   }
 }
 
+// use depth=0 to remove 
+const make_text_and_insert_section = (notebook: Notebook, depth: number) => {
+
+  console.log("make_text_and_insert_section", depth)
+  NotebookActions.changeCellType(notebook, 'markdown')
+  const activeCell = notebook?.activeCell
+  if (activeCell === undefined) { return }
+  const model = activeCell?.model
+  if (model === undefined) { return }
+  // remove starting #'s if any
+  for (let i=4; i>0; i--)
+    model.value.text = model.value.text.replace('#'.repeat(i)+' ', '')
+  if (depth == 0) { return }
+  model.value.text = `${'#'.repeat(depth)} ${model.value.text}`
+}
+
 /**
  * Initialization data for the jupyterlab-tpt extension.
  */
@@ -134,39 +162,57 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     let command
 
+
     command = 'hide-input'
     app.commands.addCommand(command, {
       label: 'hide input for all selected cells',
-      execute: () => apply_on_cells(notebookTracker, true, (cell) => set_hide_input(cell, true))
+      execute: () => apply_on_cells(notebookTracker, Scope.All, (cell) => set_hide_input(cell, true))
     })
-    app.commands.addKeyBinding({command, keys: ['Alt Cmd 9'], selector: ".jp-Notebook"})
+    app.commands.addKeyBinding({command, keys: ['Alt Cmd 9'], selector: '.jp-Notebook'})
     palette.addItem({command, category: 'Convenience'})
 
     command = 'show-input'
     app.commands.addCommand(command, {
       label: 'show input for all selected cells',
-      execute: () => apply_on_cells(notebookTracker, true, (cell) => set_hide_input(cell, false))
+      execute: () => apply_on_cells(notebookTracker, Scope.All, (cell) => set_hide_input(cell, false))
     })
-    app.commands.addKeyBinding({command, keys: ['Ctrl Alt 9'],  selector: ".jp-Notebook"})
+    app.commands.addKeyBinding({command, keys: ['Ctrl Alt 9'],  selector: '.jp-Notebook'})
     palette.addItem({command, category: 'Convenience'})
+
 
 
     command = 'all-samples-hide-input'
     app.commands.addCommand(command, {
       label: `hide input for all code cells that contain ${NEEDLE}`,
-      execute: () => apply_on_cells(notebookTracker, false, (cell) => set_hide_input_needle(cell, true))
+      execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input_needle(cell, true))
     })
-    app.commands.addKeyBinding({command, keys: ['Alt Cmd 8'], selector: ".jp-Notebook"})
+    app.commands.addKeyBinding({command, keys: ['Alt Cmd 8'], selector: '.jp-Notebook'})
     palette.addItem({command, category: 'Convenience'})
 
     command = 'all-samples-show-input'
     app.commands.addCommand(command, {
       label: `show input for all code cells that contain ${NEEDLE}`,
-      execute: () => apply_on_cells(notebookTracker, false, (cell) => set_hide_input_needle(cell, false))
+      execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input_needle(cell, false))
     })
-    app.commands.addKeyBinding({command, keys: ['Ctrl Alt 8'], selector: ".jp-Notebook"})
+    app.commands.addKeyBinding({command, keys: ['Ctrl Alt 8'], selector: '.jp-Notebook'})
     palette.addItem({command, category: 'Convenience'})
 
+
+    // Ctrl-0 to Ctrl-4 to set markdown sections
+    for (let depth=0; depth < 5; depth++) {
+
+      command = `section-level-${depth}`
+      app.commands.addCommand(command, {
+        label: `active cell becomes section level ${depth}`,
+        execute: () => {
+          const notebook = notebookTracker.currentWidget?.content
+          if (notebook === undefined) { return }
+          make_text_and_insert_section(notebook, depth)
+        }
+      })
+      app.commands.addKeyBinding({command, keys: [`Ctrl ${depth}`], selector: '.jp-Notebook'})
+      palette.addItem({command, category: 'Convenience'})
+    }
 
     notebookTracker.widgetAdded.connect((tracker, panel) => {
       const notebook = panel.content
@@ -174,8 +220,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
       if (notebookModel === null) { return }
       notebookModel.cells.changed.connect((_, change) => {
         // console.log('changed!', change)
-        if (change.type == 'remove') { return }
-        if (change.type == 'add') {
+        if (change.type === 'remove') { return }
+        if (change.type === 'add') {
           // const newCell = change.newValues[0]
           // const isCode = newCell instanceof CodeCellModel
           // console.log("added", newCell, 'code cell', isCode)
