@@ -21,6 +21,7 @@ import {
 
 import {
   CodeCell, // ICellModel, // ICodeCellModel
+  MarkdownCell,
   Cell,
 } from "@jupyterlab/cells";
 
@@ -213,6 +214,44 @@ const plugin: JupyterFrontEndPlugin<void> = {
       palette.addItem({command, category: 'Convenience'})
       app.commands.addKeyBinding({command, keys: [`Ctrl ${depth}`], selector: '.jp-Notebook'})
     }
+
+    // render-all-cells - unrender-all-cells (markdown actually)
+
+    const unrender_markdown = (cell: Cell) => {
+      if (cell.model.type != 'markdown') { return }
+      (cell as MarkdownCell).rendered = false
+    }
+    command = 'notebook:unrender-all-markdown'
+    app.commands.addCommand(command, {
+      label: 'unrender all markdown cells',
+      execute: () => apply_on_cells(notebookTracker, Scope.All, unrender_markdown)
+    })
+    palette.addItem({command, category: 'Convenience'})
+    // control-e means end of ine if in edit mode
+    app.commands.addKeyBinding({command, keys: ['Ctrl E'], selector: '.jp-Notebook.jp-mod-commandMode'})
+
+    app.commands.addKeyBinding({command: 'notebook:render-all-markdown', keys: ['Ctrl W'], selector: '.jp-Notebook'})
+
+    // render-all-markdown-cells is exposed by jlab
+    // command name is notebook:render-all-markdown
+    // unrender-all-markdown needs to be written
+    // from packages/notebook/src/searchprovider.ts
+    // const unrenderMarkdownCell = async (
+    //   highlightNext = false
+    // ): Promise<void> => {
+    //   // Unrendered markdown cell
+    //   const activeCell = this.widget?.content.activeCell;
+    //   if (
+    //     activeCell?.model.type === 'markdown' &&
+    //     (activeCell as MarkdownCell).rendered
+    //   ) {
+    //     (activeCell as MarkdownCell).rendered = false;
+    //     if (highlightNext) {
+    //       await this.highlightNext(loop);
+    //     }
+    //   }
+    // };
+
 
     notebookTracker.widgetAdded.connect((tracker, panel) => {
       const notebook = panel.content
