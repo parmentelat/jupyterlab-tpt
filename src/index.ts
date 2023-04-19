@@ -168,16 +168,16 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: 'hide input for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.All, (cell) => set_hide_input(cell, true))
     })
-    app.commands.addKeyBinding({command, keys: ['Alt Cmd 9'], selector: '.jp-Notebook'})
     palette.addItem({command, category: 'Convenience'})
+    app.commands.addKeyBinding({command, keys: ['Alt Cmd 9'], selector: '.jp-Notebook'})
 
     command = 'show-input'
     app.commands.addCommand(command, {
       label: 'show input for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.All, (cell) => set_hide_input(cell, false))
     })
-    app.commands.addKeyBinding({command, keys: ['Ctrl Alt 9'],  selector: '.jp-Notebook'})
     palette.addItem({command, category: 'Convenience'})
+    app.commands.addKeyBinding({command, keys: ['Ctrl Alt 9'],  selector: '.jp-Notebook'})
 
 
 
@@ -186,16 +186,16 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: `hide input for all code cells that contain ${NEEDLE}`,
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input_needle(cell, true))
     })
-    app.commands.addKeyBinding({command, keys: ['Alt Cmd 8'], selector: '.jp-Notebook'})
     palette.addItem({command, category: 'Convenience'})
+    app.commands.addKeyBinding({command, keys: ['Alt Cmd 8'], selector: '.jp-Notebook'})
 
     command = 'all-samples-show-input'
     app.commands.addCommand(command, {
       label: `show input for all code cells that contain ${NEEDLE}`,
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input_needle(cell, false))
     })
-    app.commands.addKeyBinding({command, keys: ['Ctrl Alt 8'], selector: '.jp-Notebook'})
     palette.addItem({command, category: 'Convenience'})
+    app.commands.addKeyBinding({command, keys: ['Ctrl Alt 8'], selector: '.jp-Notebook'})
 
 
     // Ctrl-0 to Ctrl-4 to set markdown sections
@@ -210,8 +210,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
           make_text_and_insert_section(notebook, depth)
         }
       })
-      app.commands.addKeyBinding({command, keys: [`Ctrl ${depth}`], selector: '.jp-Notebook'})
       palette.addItem({command, category: 'Convenience'})
+      app.commands.addKeyBinding({command, keys: [`Ctrl ${depth}`], selector: '.jp-Notebook'})
     }
 
     notebookTracker.widgetAdded.connect((tracker, panel) => {
