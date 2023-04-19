@@ -231,6 +231,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
     app.commands.addKeyBinding({command, keys: ['Ctrl E'], selector: '.jp-Notebook.jp-mod-commandMode'})
 
     app.commands.addKeyBinding({command: 'notebook:render-all-markdown', keys: ['Ctrl W'], selector: '.jp-Notebook'})
+    app.commands.addKeyBinding({command: 'notebook:move-cell-up', keys: ['U'], selector: '.jp-Notebook.jp-mod-commandMode'})
+    app.commands.addKeyBinding({command: 'notebook:move-cell-down', keys: ['D'], selector: '.jp-Notebook.jp-mod-commandMode'})
 
     // render-all-markdown-cells is exposed by jlab
     // command name is notebook:render-all-markdown
