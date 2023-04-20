@@ -15,13 +15,13 @@
 # %% [markdown] hide_input=false user_expressions=[]
 # # header 1
 
-# %% [markdown]
+# %% [markdown] user_expressions=[]
 # text cell 1
 
 # %% [markdown] hide_input=false user_expressions=[]
 # ## header 2
 
-# %% [markdown]
+# %% [markdown] user_expressions=[]
 # text cell 2
 
 # %% hide_input=false
@@ -38,13 +38,16 @@ print('hello')
 # %% [markdown] hide_input=false user_expressions=[]
 # ### header 3
 
-# %% [markdown]
+# %% [markdown] user_expressions=[]
 # text cell 3
 
 # %% [markdown] hide_input=false slideshow={"slide_type": "slide"} user_expressions=[]
 # #### and a header 4
 
-# %% hide_input=true tags=["hide-input"]
+# %% [markdown] user_expressions=[]
+# text cell 4
+
+# %% hide_input=false
 # this cell should get hide-input with option-command 8 even if not active
 
 class Foo: pass
