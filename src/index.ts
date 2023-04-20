@@ -23,7 +23,7 @@ import {
   CodeCell, // ICellModel, // ICodeCellModel
   MarkdownCell,
   Cell,
-} from "@jupyterlab/cells";
+} from '@jupyterlab/cells';
 
 //import { Widget } from '@lumino/widgets';
 
@@ -57,7 +57,7 @@ const apply_on_cells = (
     const activeCell = notebook.activeCell
     if (activeCell === null) { return }
 
-    if (scope == Scope.Active) {
+    if (scope === Scope.Active) {
       actionCells = [activeCell]
     } else {
       const { anchor, head } = notebook.getContiguousSelection()
@@ -71,7 +71,6 @@ const apply_on_cells = (
   }
    actionCells.forEach(to_apply)
 }
-
 
 /*
 in order to have consistent behaviour between
@@ -95,7 +94,7 @@ const set_hide_input = (cell: Cell, hidden: boolean) => {
     tags.push('hide-input')
   } else if (!hidden && (tags.includes('hide-input'))) {
     // unset if currently set
-    tags = tags.filter((item) => item != 'hide-input')
+    tags = tags.filter((item) => item !== 'hide-input')
   } else {
     // otherwise, nothing to do
     return
@@ -120,19 +119,20 @@ const set_hide_input_needle = (cell: Cell, hidden: boolean) => {
   }
 }
 
-// use depth=0 to remove 
+// use depth=0 to remove
 const make_text_and_insert_section = (notebook: Notebook, depth: number) => {
 
-  console.log("make_text_and_insert_section", depth)
+  // console.log("make_text_and_insert_section", depth)
   NotebookActions.changeCellType(notebook, 'markdown')
   const activeCell = notebook?.activeCell
   if (activeCell === undefined) { return }
   const model = activeCell?.model
   if (model === undefined) { return }
   // remove starting #'s if any
-  for (let i=4; i>0; i--)
+  for (let i=4; i>0; i--) {
     model.value.text = model.value.text.replace('#'.repeat(i)+' ', '')
-  if (depth == 0) { return }
+  }
+  if (depth === 0) { return }
   model.value.text = `${'#'.repeat(depth)} ${model.value.text}`
 }
 
@@ -164,7 +164,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     let command
 
 
-    command = 'hide-input'
+    command = 'convenience:hide-input'
     app.commands.addCommand(command, {
       label: 'hide input for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.All, (cell) => set_hide_input(cell, true))
@@ -182,7 +182,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
 
 
-    command = 'all-samples-hide-input'
+    command = 'convenience:hide-input-all-samples'
     app.commands.addCommand(command, {
       label: `hide input for all code cells that contain ${NEEDLE}`,
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input_needle(cell, true))
@@ -190,7 +190,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     palette.addItem({command, category: 'Convenience'})
     app.commands.addKeyBinding({command, keys: ['Alt Cmd 8'], selector: '.jp-Notebook'})
 
-    command = 'all-samples-show-input'
+    command = 'convenience:show-input-all-samples'
     app.commands.addCommand(command, {
       label: `show input for all code cells that contain ${NEEDLE}`,
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input_needle(cell, false))
@@ -202,7 +202,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     // Ctrl-0 to Ctrl-4 to set markdown sections
     for (let depth=0; depth < 5; depth++) {
 
-      command = `section-level-${depth}`
+      command = `convenience:section-level-${depth}`
       app.commands.addCommand(command, {
         label: `active cell becomes section level ${depth}`,
         execute: () => {
@@ -218,7 +218,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     // render-all-cells - unrender-all-cells (markdown actually)
 
     const unrender_markdown = (cell: Cell) => {
-      if (cell.model.type != 'markdown') { return }
+      if (cell.model.type !== 'markdown') { return }
       (cell as MarkdownCell).rendered = false
     }
     command = 'notebook:unrender-all-markdown'
@@ -231,28 +231,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
     app.commands.addKeyBinding({command, keys: ['Ctrl E'], selector: '.jp-Notebook.jp-mod-commandMode'})
 
     app.commands.addKeyBinding({command: 'notebook:render-all-markdown', keys: ['Ctrl W'], selector: '.jp-Notebook'})
+
+    // this is actually lowercase u and d, would need an explicit Shift otherwise
     app.commands.addKeyBinding({command: 'notebook:move-cell-up', keys: ['U'], selector: '.jp-Notebook.jp-mod-commandMode'})
     app.commands.addKeyBinding({command: 'notebook:move-cell-down', keys: ['D'], selector: '.jp-Notebook.jp-mod-commandMode'})
 
-    // render-all-markdown-cells is exposed by jlab
-    // command name is notebook:render-all-markdown
-    // unrender-all-markdown needs to be written
-    // from packages/notebook/src/searchprovider.ts
-    // const unrenderMarkdownCell = async (
-    //   highlightNext = false
-    // ): Promise<void> => {
-    //   // Unrendered markdown cell
-    //   const activeCell = this.widget?.content.activeCell;
-    //   if (
-    //     activeCell?.model.type === 'markdown' &&
-    //     (activeCell as MarkdownCell).rendered
-    //   ) {
-    //     (activeCell as MarkdownCell).rendered = false;
-    //     if (highlightNext) {
-    //       await this.highlightNext(loop);
-    //     }
-    //   }
-    // };
 
 
     notebookTracker.widgetAdded.connect((tracker, panel) => {
