@@ -10,21 +10,21 @@ export enum MetadataAction {
   Remove,   // undo insert
 }
 
-export const manage_metadata = (
+const manage_metadata = (
   data: Record<string, any>,      // intended to be cell.metadata
   action: MetadataAction,
   xpath: string | string[],
   value: any,
 ): any => {
 
-  const {Get, Set, Unset, Insert, Remove,  } = MetadataAction
+  const { Get, Set, Unset, Insert, Remove, } = MetadataAction
 
   const recurse = (
     scanner: Record<string, any>,
     action: MetadataAction,
     xpath: string[],
     value: any,
-  ) : any => {
+  ): any => {
 
     // console.log(`in recurse with xpath=${xpath}`)
 
@@ -49,7 +49,7 @@ export const manage_metadata = (
           if (!(step in scanner)) {
             scanner[step] = []
           }
-          if (! (scanner[step] instanceof Array)) {
+          if (!(scanner[step] instanceof Array)) {
             return undefined
           }
           // insert if not already present
@@ -73,7 +73,7 @@ export const manage_metadata = (
             return undefined
           }
       }
-    }  else {
+    } else {
       const [first, ...rest] = xpath
       if (first in scanner) {
         if (!(scanner[first] instanceof Object)) {
@@ -107,7 +107,7 @@ export const manage_metadata = (
     }
   }
 
-  if (typeof xpath == 'string') {
+  if (typeof xpath === 'string') {
     const string = xpath as string
     xpath = string.split('.')
   }
@@ -115,3 +115,14 @@ export const manage_metadata = (
 
   return recurse(data, action, xpath_list, value)
 }
+
+export const metadata_get = (metadata, xpath) =>
+  manage_metadata(metadata, MetadataAction.Get, xpath, undefined)
+export const metadata_set = (metadata, xpath, value) =>
+  manage_metadata(metadata, MetadataAction.Set, xpath, value)
+export const metadata_unset = (metadata, xpath) =>
+  manage_metadata(metadata, MetadataAction.Unset, xpath, undefined)
+export const metadata_insert = (metadata, xpath, key) =>
+  manage_metadata(metadata, MetadataAction.Insert, xpath, key)
+export const metadata_remove = (metadata, xpath, key) =>
+  manage_metadata(metadata, MetadataAction.Remove, xpath, key)
