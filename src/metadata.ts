@@ -1,0 +1,110 @@
+/* eslint-disable no-case-declarations */
+/* eslint-disable prettier/prettier */
+
+// helpers to manage a cell's metadata
+enum MetadataAction {
+  Get,      // get the metadata at that xpath
+  Set,      // set the metadata at that xpath
+  Unset,    // undo the set operation
+  Insert,   // insert the value inside that xpath (should point to a list)
+  Remove,   // undo insert
+}
+
+export const manage_metadata = (
+  data: Record<string, any>,      // intended to be cell.metadata
+  action: MetadataAction,
+  xpath: string | string[],
+  value: any,
+): any => {
+
+  const {Get, Set, Unset, Insert, Remove,  } = MetadataAction
+
+  const recurse = (
+    scanner: Record<string, any>,
+    action: MetadataAction,
+    xpath: string[],
+    value: any,
+  ) : any => {
+
+    if (xpath.length === 1) {
+      const [step] = xpath
+      //
+      switch (action) {
+        case Get:
+          return scanner[step]
+        case Set:
+          scanner[step] = value
+          return value
+        case Unset:
+          if (step in scanner) {
+            delete scanner[step]
+            return true
+          } else {
+            return false
+          }
+        case Insert:
+          // create list if needed
+          if (!(step in scanner)) {
+            scanner[step] = []
+          }
+          if (! (scanner[step] instanceof Array)) {
+            return undefined
+          }
+          // insert if not already present
+          const list = scanner[step] as Array<string>
+          if (list.indexOf(value) < 0) {
+            list.push(value)
+            return value
+          } else {
+            return undefined
+          }
+        case Remove:
+          if (scanner[step] instanceof Array) {
+            // const list = scanner[step] as Array<string>
+            // list.pop(value)
+            return value
+          } else {
+            return undefined
+          }
+      }
+    }  else {
+      const [first, ...rest] = xpath
+      if (first in scanner) {
+        if (!(scanner[first] instanceof Object)) {
+          return undefined
+        } else {
+          const next = scanner[first] as Record<string, any>
+          return recurse(next, action, rest, value)
+        }
+      } else {
+        switch (action) {
+          case Get:
+            return undefined
+          case Set:
+            scanner[first] = {}
+            const next = scanner[first] as Record<string, any>
+            return recurse(next, action, rest, value)
+          case Unset:
+            return undefined
+          case Insert:
+            if (rest.length === 0) {
+              scanner[first] = []
+              return recurse(scanner[first], action, rest, value)
+            } else {
+              scanner[first] = {}
+              return recurse(scanner[first], action, rest, value)
+            }
+          case Remove:
+            return undefined
+        }
+      }
+    }
+  }
+
+  if (xpath instanceof String) {
+    xpath = xpath.split('.')
+  }
+  const xpath_list = xpath as Array<string>
+
+  return recurse(data, action, xpath_list, value)
+}
