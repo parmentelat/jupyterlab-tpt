@@ -6,6 +6,7 @@ My custom tweaks for using JLAB
 ## Requirements
 
 - JupyterLab >= 3.0
+- jupyterlab-myst
 
 ## Install
 
@@ -22,6 +23,40 @@ To remove the extension, execute:
 ```bash
 pip uninstall jupyterlab_tpt
 ```
+
+## What does it do ?
+
+Remember that Alt = Option on the mac
+
+| keystroke | command | what |
+|-:|:-:|:-|
+| Alt-Cmd-9 | `convenience:hide-input` | hide input on selected cells |
+| Ctrl-Alt-9 | `convenience:show-input` | show input on selected cells |
+| Alt-Cmd-8 | `convenience:hide-input-all-samples` | hide input on all code cells with `tools.sample_from` |
+| Ctrl-Alt-8 | `convenience:show-input-all-samples` | hide input on all code cells with `tools.sample_from` |
+| Ctrl-0 | `convenience:section-level-0` | remove section header (#s) |
+| Ctrl-1 | `convenience:section-level-1` | set as section 1 header |
+| Ctrl-2 |
+| Ctrl-3 |
+| Ctrl-4 | `convenience:section-level-4` | set as section 4 header |
+| Ctrl-e | `convenience:unrender-all-markdown` | unrender all markdown cells |
+| Ctrl-w | `notebook:render-all-markdown` | render all markdown cells |
+| u | `notebook:move-cell-up` |
+| d | `notebook:move-cell-down` |
+
+## TODO
+
+* in nb-courselevels, we set e.g. `data-tag-basic=true` and/or `data-tag-basic=true`
+* how to inject css ?
+
+| keystroke | command | what |
+|-:|:-:|:-|
+| ctrl-x | `courselevels:toggle-basic` |
+| ctrl-y | `courselevels:toggle-intermediate` |
+| ctrl-z | `courselevels:toggle-advanced` |
+| ???    | `courselevels:toggle-frame` |
+|||
+| ???    | remove-empty-tags |
 
 ## Contributing
 
