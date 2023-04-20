@@ -27,6 +27,10 @@ import {
 
 //import { Widget } from '@lumino/widgets';
 
+import {
+    /*metadata_get,*/ metadata_set, metadata_unset, metadata_insert, metadata_remove
+} from './metadata'
+
 
 /*
 the logic of applying a function on a set of cells
@@ -83,26 +87,16 @@ and jupyter book, we manage consistently
 */
 const set_hide_input = (cell: Cell, hidden: boolean) => {
   const metadata = cell.model.metadata
-  metadata.set('hide_input', hidden)
-  let tags = [] as Array<string>
-  if (metadata.has('tags')) {
-    tags = metadata.get('tags') as Array<string>
-    if (!tags) {
-      tags = []
-    }
-  }
-  if (hidden && (!tags.includes('hide-input'))) {
-    // set if not already
-    tags.push('hide-input')
-  } else if (!hidden && (tags.includes('hide-input'))) {
-    // unset if currently set
-    tags = tags.filter((item) => item !== 'hide-input')
+  console.log("entering", metadata)
+  if (hidden) {
+    metadata_set(metadata, 'hide_input', true)
+    metadata_insert(metadata, 'tags', 'hide-input')
   } else {
-    // otherwise, nothing to do
-    return
+    metadata_unset(metadata, 'hide_input')
+    metadata_remove(metadata, 'tags', 'hide-input')
   }
-  // console.log('setting new tags', tags)
-  metadata.set('tags', tags)
+  console.log("exiting", metadata)
+  console.log("exiting", cell.model.metadata)
 }
 
 
