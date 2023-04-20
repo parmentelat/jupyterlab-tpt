@@ -69,7 +69,9 @@ const apply_on_cells = (
       }
     }
   }
-   actionCells.forEach(to_apply)
+  // console.log(`apply_on_cells with scope=${scope} on ${actionCells.length} cells`)
+
+  actionCells.forEach(to_apply)
 }
 
 /*
@@ -167,7 +169,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     command = 'convenience:hide-input'
     app.commands.addCommand(command, {
       label: 'hide input for all selected cells',
-      execute: () => apply_on_cells(notebookTracker, Scope.All, (cell) => set_hide_input(cell, true))
+      execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input(cell, true))
     })
     palette.addItem({command, category: 'Convenience'})
     app.commands.addKeyBinding({command, keys: ['Alt Cmd 9'], selector: '.jp-Notebook'})
@@ -175,7 +177,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     command = 'show-input'
     app.commands.addCommand(command, {
       label: 'show input for all selected cells',
-      execute: () => apply_on_cells(notebookTracker, Scope.All, (cell) => set_hide_input(cell, false))
+      execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input(cell, false))
     })
     palette.addItem({command, category: 'Convenience'})
     app.commands.addKeyBinding({command, keys: ['Ctrl Alt 9'],  selector: '.jp-Notebook'})
@@ -185,7 +187,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     command = 'convenience:hide-input-all-samples'
     app.commands.addCommand(command, {
       label: `hide input for all code cells that contain ${NEEDLE}`,
-      execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input_needle(cell, true))
+      execute: () => apply_on_cells(notebookTracker, Scope.All, (cell) => set_hide_input_needle(cell, true))
     })
     palette.addItem({command, category: 'Convenience'})
     app.commands.addKeyBinding({command, keys: ['Alt Cmd 8'], selector: '.jp-Notebook'})
@@ -193,7 +195,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     command = 'convenience:show-input-all-samples'
     app.commands.addCommand(command, {
       label: `show input for all code cells that contain ${NEEDLE}`,
-      execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input_needle(cell, false))
+      execute: () => apply_on_cells(notebookTracker, Scope.All, (cell) => set_hide_input_needle(cell, false))
     })
     palette.addItem({command, category: 'Convenience'})
     app.commands.addKeyBinding({command, keys: ['Ctrl Alt 8'], selector: '.jp-Notebook'})
