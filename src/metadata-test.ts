@@ -1,11 +1,13 @@
 /* eslint-disable prettier/prettier */
 
-import { metadata_get, metadata_set, metadata_unset, metadata_insert, metadata_remove } from './metadata'
+import { 
+    metadata_get, metadata_set, metadata_unset, metadata_insert, metadata_remove
+} from './metadata'
 
 const md = {}
 
 // uncomment to debug
-const checkpoint = (message) => {
+const checkpoint = (message: string) => {
     // console.log('------', message, '\n', JSON.stringify(md))
     message
 }
@@ -69,3 +71,12 @@ console.assert(fetch instanceof Array, '062')
 console.assert(fetch.length === 1, '063')
 
 checkpoint('foo removed from the tags')
+
+console.assert(metadata_get(md, 'hide_input') === undefined, '071')
+console.assert(metadata_set(md, 'hide_input', true) === true, '072')
+console.assert(metadata_set(md, 'hide_input', false) === false, '072-bis')
+console.assert(metadata_unset(md, 'hide_input') === true, '073')
+console.assert(metadata_get(md, 'hide_input') === undefined, '074')
+
+checkpoint('unchanged')
+

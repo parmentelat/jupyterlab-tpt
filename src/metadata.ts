@@ -10,17 +10,20 @@ export enum MetadataAction {
   Remove,   // undo insert
 }
 
+type Metadata = Record<string, any>
+type Xpath = string | string[]
+
 const manage_metadata = (
-  data: Record<string, any>,      // intended to be cell.metadata
+  data: Metadata,      // intended to be cell.metadata
   action: MetadataAction,
-  xpath: string | string[],
+  xpath: Xpath,
   value: any,
 ): any => {
 
   const { Get, Set, Unset, Insert, Remove, } = MetadataAction
 
   const recurse = (
-    scanner: Record<string, any>,
+    scanner: Metadata,
     action: MetadataAction,
     xpath: string[],
     value: any,
@@ -116,13 +119,13 @@ const manage_metadata = (
   return recurse(data, action, xpath_list, value)
 }
 
-export const metadata_get = (metadata, xpath) =>
+export const metadata_get = (metadata: Metadata, xpath: Xpath) =>
   manage_metadata(metadata, MetadataAction.Get, xpath, undefined)
-export const metadata_set = (metadata, xpath, value) =>
+export const metadata_set = (metadata: Metadata, xpath: Xpath, value: any) =>
   manage_metadata(metadata, MetadataAction.Set, xpath, value)
-export const metadata_unset = (metadata, xpath) =>
+export const metadata_unset = (metadata: Metadata, xpath: Xpath) =>
   manage_metadata(metadata, MetadataAction.Unset, xpath, undefined)
-export const metadata_insert = (metadata, xpath, key) =>
+export const metadata_insert = (metadata: Metadata, xpath: Xpath, key: string) =>
   manage_metadata(metadata, MetadataAction.Insert, xpath, key)
-export const metadata_remove = (metadata, xpath, key) =>
+export const metadata_remove = (metadata: Metadata, xpath: Xpath, key: string) =>
   manage_metadata(metadata, MetadataAction.Remove, xpath, key)
