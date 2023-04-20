@@ -2,7 +2,7 @@
 /* eslint-disable prettier/prettier */
 
 // helpers to manage a cell's metadata
-enum MetadataAction {
+export enum MetadataAction {
   Get,      // get the metadata at that xpath
   Set,      // set the metadata at that xpath
   Unset,    // undo the set operation
@@ -25,6 +25,8 @@ export const manage_metadata = (
     xpath: string[],
     value: any,
   ) : any => {
+
+    // console.log(`in recurse with xpath=${xpath}`)
 
     if (xpath.length === 1) {
       const [step] = xpath
@@ -60,8 +62,12 @@ export const manage_metadata = (
           }
         case Remove:
           if (scanner[step] instanceof Array) {
-            // const list = scanner[step] as Array<string>
-            // list.pop(value)
+            const list = (scanner[step]) as string[]
+            // list.pop(value) is not accepted by ts ?!?
+            const index = list.indexOf(value)
+            if (index >= 0) {
+              list.splice(index, 1)
+            }
             return value
           } else {
             return undefined
@@ -101,8 +107,9 @@ export const manage_metadata = (
     }
   }
 
-  if (xpath instanceof String) {
-    xpath = xpath.split('.')
+  if (typeof xpath == 'string') {
+    const string = xpath as string
+    xpath = string.split('.')
   }
   const xpath_list = xpath as Array<string>
 
