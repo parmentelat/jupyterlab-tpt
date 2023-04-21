@@ -12,7 +12,7 @@
 #     name: python3
 # ---
 
-# %% [markdown] hide_input=false user_expressions=[]
+# %% [markdown]
 # # header 1
 
 # %% [markdown] user_expressions=[]
@@ -47,7 +47,7 @@ print('hello')
 # %% [markdown] user_expressions=[]
 # text cell 4
 
-# %% hide_input=false
+# %% tags=["hide-input"] hide_input=true
 # this cell should get hide-input with option-command 8 even if not active
 
 class Foo: pass

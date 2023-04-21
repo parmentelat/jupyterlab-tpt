@@ -2,7 +2,7 @@
 /* eslint-disable prettier/prettier */
 
 // helpers to manage a cell's metadata
-export enum MetadataAction {
+enum MetadataAction {
   Get,      // get the metadata at that xpath
   Set,      // set the metadata at that xpath
   Unset,    // undo the set operation
@@ -10,8 +10,17 @@ export enum MetadataAction {
   Remove,   // undo insert
 }
 
-type Metadata = Record<string, any>
-type Xpath = string | string[]
+export type Metadata = Record<string, any>
+export type Xpath = string | string[]
+
+export const normalize = (xpath: Xpath): string[] => {
+  if (typeof xpath === 'string') {
+    const string = xpath as string
+    xpath = string.split('.')
+  }
+  return xpath
+}
+
 
 const manage_metadata = (
   data: Metadata,      // intended to be cell.metadata
@@ -31,7 +40,14 @@ const manage_metadata = (
 
     // console.log(`in recurse with xpath=${xpath}`)
 
-    if (xpath.length === 1) {
+    if (xpath.length === 0) {
+      switch (action) {
+        case Get:
+          return scanner
+        default:
+          return undefined
+      }
+    } else if (xpath.length === 1) {
       const [step] = xpath
       //
       switch (action) {
@@ -56,25 +72,26 @@ const manage_metadata = (
             return undefined
           }
           // insert if not already present
-          const list = scanner[step] as Array<string>
-          if (list.indexOf(value) < 0) {
-            list.push(value)
-            return value
-          } else {
-            return undefined
+          {
+            const list = scanner[step] as Array<string>
+            if (list.indexOf(value) < 0) {
+              list.push(value)
+              return value
+            } else {
+              return undefined
+            }
           }
         case Remove:
-          if (scanner[step] instanceof Array) {
-            const list = (scanner[step]) as string[]
-            // list.pop(value) is not accepted by ts ?!?
-            const index = list.indexOf(value)
-            if (index >= 0) {
-              list.splice(index, 1)
-            }
-            return value
-          } else {
+          if (!(scanner[step] instanceof Array)) {
             return undefined
           }
+          const list = (scanner[step]) as string[]
+          // list.pop(value) is not accepted by ts ?!?
+          const index = list.indexOf(value)
+          if (index >= 0) {
+            list.splice(index, 1)
+          }
+          return value
       }
     } else {
       const [first, ...rest] = xpath
@@ -110,11 +127,7 @@ const manage_metadata = (
     }
   }
 
-  if (typeof xpath === 'string') {
-    const string = xpath as string
-    xpath = string.split('.')
-  }
-  const xpath_list = xpath as Array<string>
+  const xpath_list = normalize(xpath)
 
   return recurse(data, action, xpath_list, value)
 }

@@ -28,8 +28,8 @@ import {
 //import { Widget } from '@lumino/widgets';
 
 import {
-    /*xpath_get,*/ xpath_set, xpath_unset, xpath_insert, xpath_remove
-} from './xpath'
+  /*md_get,*/ md_set, md_unset, md_insert, md_remove
+} from './metadata'
 
 
 /*
@@ -86,17 +86,13 @@ and jupyter book, we manage consistently
 * the 'hide-input' tag
 */
 const set_hide_input = (cell: Cell, hidden: boolean) => {
-  const metadata = cell.model.metadata
-  console.log("entering", metadata)
   if (hidden) {
-    xpath_set(metadata, 'hide_input', true)
-    xpath_insert(metadata, 'tags', 'hide-input')
+    md_set(cell, 'hide_input', true)
+    md_insert(cell, 'tags', 'hide-input')
   } else {
-    xpath_unset(metadata, 'hide_input')
-    xpath_remove(metadata, 'tags', 'hide-input')
+    md_unset(cell, 'hide_input')
+    md_remove(cell, 'tags', 'hide-input')
   }
-  console.log("exiting", metadata)
-  console.log("exiting", cell.model.metadata)
 }
 
 
