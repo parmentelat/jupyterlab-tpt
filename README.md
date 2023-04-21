@@ -143,7 +143,7 @@ npm install -g ts-node typescript '@types/node'
 
 ```terminal
 rm src/*js
-tsc src/metadata*ts && node src/metadata-test.js
+tsc src/xpath*ts && node src/xpath-test.js
 ```
 
 I have tried to use `ts-node` but to no avail so far

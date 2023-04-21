@@ -119,13 +119,13 @@ const manage_metadata = (
   return recurse(data, action, xpath_list, value)
 }
 
-export const metadata_get = (metadata: Metadata, xpath: Xpath) =>
+export const xpath_get = (metadata: Metadata, xpath: Xpath) =>
   manage_metadata(metadata, MetadataAction.Get, xpath, undefined)
-export const metadata_set = (metadata: Metadata, xpath: Xpath, value: any) =>
+export const xpath_set = (metadata: Metadata, xpath: Xpath, value: any) =>
   manage_metadata(metadata, MetadataAction.Set, xpath, value)
-export const metadata_unset = (metadata: Metadata, xpath: Xpath) =>
+export const xpath_unset = (metadata: Metadata, xpath: Xpath) =>
   manage_metadata(metadata, MetadataAction.Unset, xpath, undefined)
-export const metadata_insert = (metadata: Metadata, xpath: Xpath, key: string) =>
+export const xpath_insert = (metadata: Metadata, xpath: Xpath, key: string) =>
   manage_metadata(metadata, MetadataAction.Insert, xpath, key)
-export const metadata_remove = (metadata: Metadata, xpath: Xpath, key: string) =>
+export const xpath_remove = (metadata: Metadata, xpath: Xpath, key: string) =>
   manage_metadata(metadata, MetadataAction.Remove, xpath, key)

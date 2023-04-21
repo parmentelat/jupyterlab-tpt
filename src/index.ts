@@ -28,8 +28,8 @@ import {
 //import { Widget } from '@lumino/widgets';
 
 import {
-    /*metadata_get,*/ metadata_set, metadata_unset, metadata_insert, metadata_remove
-} from './metadata'
+    /*xpath_get,*/ xpath_set, xpath_unset, xpath_insert, xpath_remove
+} from './xpath'
 
 
 /*
@@ -89,11 +89,11 @@ const set_hide_input = (cell: Cell, hidden: boolean) => {
   const metadata = cell.model.metadata
   console.log("entering", metadata)
   if (hidden) {
-    metadata_set(metadata, 'hide_input', true)
-    metadata_insert(metadata, 'tags', 'hide-input')
+    xpath_set(metadata, 'hide_input', true)
+    xpath_insert(metadata, 'tags', 'hide-input')
   } else {
-    metadata_unset(metadata, 'hide_input')
-    metadata_remove(metadata, 'tags', 'hide-input')
+    xpath_unset(metadata, 'hide_input')
+    xpath_remove(metadata, 'tags', 'hide-input')
   }
   console.log("exiting", metadata)
   console.log("exiting", cell.model.metadata)
