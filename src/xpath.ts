@@ -2,7 +2,7 @@
 /* eslint-disable prettier/prettier */
 
 // helpers to manage a cell's metadata
-enum MetadataAction {
+enum Action {
   Get,      // get the metadata at that xpath
   Set,      // set the metadata at that xpath
   Unset,    // undo the set operation
@@ -10,7 +10,7 @@ enum MetadataAction {
   Remove,   // undo insert
 }
 
-export type Metadata = Record<string, any>
+export type XpathMap = Record<string, any>
 export type Xpath = string | string[]
 
 export const normalize = (xpath: Xpath): string[] => {
@@ -23,17 +23,17 @@ export const normalize = (xpath: Xpath): string[] => {
 
 
 const manage_metadata = (
-  data: Metadata,      // intended to be cell.metadata
-  action: MetadataAction,
+  data: XpathMap,      // intended to be cell.metadata
+  action: Action,
   xpath: Xpath,
   value: any,
 ): any => {
 
-  const { Get, Set, Unset, Insert, Remove, } = MetadataAction
+  const { Get, Set, Unset, Insert, Remove, } = Action
 
   const recurse = (
-    scanner: Metadata,
-    action: MetadataAction,
+    scanner: XpathMap,
+    action: Action,
     xpath: string[],
     value: any,
   ): any => {
@@ -132,13 +132,13 @@ const manage_metadata = (
   return recurse(data, action, xpath_list, value)
 }
 
-export const xpath_get = (metadata: Metadata, xpath: Xpath) =>
-  manage_metadata(metadata, MetadataAction.Get, xpath, undefined)
-export const xpath_set = (metadata: Metadata, xpath: Xpath, value: any) =>
-  manage_metadata(metadata, MetadataAction.Set, xpath, value)
-export const xpath_unset = (metadata: Metadata, xpath: Xpath) =>
-  manage_metadata(metadata, MetadataAction.Unset, xpath, undefined)
-export const xpath_insert = (metadata: Metadata, xpath: Xpath, key: string) =>
-  manage_metadata(metadata, MetadataAction.Insert, xpath, key)
-export const xpath_remove = (metadata: Metadata, xpath: Xpath, key: string) =>
-  manage_metadata(metadata, MetadataAction.Remove, xpath, key)
+export const xpath_get = (metadata: XpathMap, xpath: Xpath) =>
+  manage_metadata(metadata, Action.Get, xpath, undefined)
+export const xpath_set = (metadata: XpathMap, xpath: Xpath, value: any) =>
+  manage_metadata(metadata, Action.Set, xpath, value)
+export const xpath_unset = (metadata: XpathMap, xpath: Xpath) =>
+  manage_metadata(metadata, Action.Unset, xpath, undefined)
+export const xpath_insert = (metadata: XpathMap, xpath: Xpath, key: string) =>
+  manage_metadata(metadata, Action.Insert, xpath, key)
+export const xpath_remove = (metadata: XpathMap, xpath: Xpath, key: string) =>
+  manage_metadata(metadata, Action.Remove, xpath, key)

@@ -3,10 +3,9 @@
 import { Cell } from '@jupyterlab/cells'
 
 import {
-  Metadata, Xpath, normalize,
+  XpathMap, Xpath, normalize,
   xpath_get, xpath_set, xpath_unset, xpath_insert, xpath_remove
 } from './xpath'
-
 
 
 export const md_get = (cell: Cell, xpath: Xpath): any => {
@@ -17,7 +16,7 @@ export const md_get = (cell: Cell, xpath: Xpath): any => {
   if (!md.has(first)) {
     return undefined
   } else {
-    return xpath_get(md.get(first) as Metadata, tail)
+    return xpath_get(md.get(first) as XpathMap, tail)
   }
 }
 
@@ -30,7 +29,7 @@ export const md_set = (cell: Cell, xpath: Xpath, value: any): any => {
     return value
   }
   const subtree = md.has(first) ? md.get(first) : {}
-  const retcod = xpath_set(subtree as Metadata, tail, value)
+  const retcod = xpath_set(subtree as XpathMap, tail, value)
   md.set(first, subtree)
   return retcod
 }
@@ -47,7 +46,7 @@ export const md_unset = (cell: Cell, xpath: Xpath): boolean => {
     return true
   } else {
     const subtree = md.get(first)
-    const retcod = xpath_unset(subtree as Metadata, tail)
+    const retcod = xpath_unset(subtree as XpathMap, tail)
     md.set(first, subtree)
     return retcod
   }
@@ -75,7 +74,7 @@ export const md_insert = (cell: Cell, xpath: Xpath, key: string) => {
     }
   } else {
     const subtree = md.has(first) ? md.get(first) : {}
-    const retcod = xpath_insert(subtree as Metadata, tail, key)
+    const retcod = xpath_insert(subtree as XpathMap, tail, key)
     md.set(first, subtree)
     return retcod
   }
@@ -105,7 +104,7 @@ export const md_remove = (cell: Cell, xpath: Xpath, key:string) => {
     return key
   } else {
     const subtree = md.get(first)
-    const retcod = xpath_remove(subtree as Metadata, tail, key)
+    const retcod = xpath_remove(subtree as XpathMap, tail, key)
     md.set(first, subtree)
     return retcod
   }
