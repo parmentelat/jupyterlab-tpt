@@ -8,24 +8,24 @@
 import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
-} from '@jupyterlab/application';
+} from '@jupyterlab/application'
 
 //import {ICommandPalette, MainAreaWidget } from '@jupyterlab/apputils';
-import { ICommandPalette } from '@jupyterlab/apputils';
+import { ICommandPalette } from '@jupyterlab/apputils'
 
 import {
   INotebookTracker, // NotebookPanel, // INotebookModel,
   Notebook,
   NotebookActions,
-} from '@jupyterlab/notebook';
+} from '@jupyterlab/notebook'
 
 import {
   CodeCell, // ICellModel, // ICodeCellModel
   MarkdownCell,
   Cell,
-} from '@jupyterlab/cells';
+} from '@jupyterlab/cells'
 
-//import { Widget } from '@lumino/widgets';
+//import { Widget } from '@lumino/widgets'
 
 import {
   /*md_get,*/ md_set, md_unset, md_insert, md_remove
@@ -246,6 +246,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
       })
     })
   }
-};
+}
 
-export default plugin;
+export default plugin
