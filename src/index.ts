@@ -229,22 +229,24 @@ const plugin: JupyterFrontEndPlugin<void> = {
     app.commands.addKeyBinding({command: 'notebook:move-cell-down', keys: ['D'], selector: '.jp-Notebook.jp-mod-commandMode'})
 
 
-
     notebookTracker.widgetAdded.connect((tracker, panel) => {
-      const notebook = panel.content
-      const notebookModel = notebook.model
-      if (notebookModel === null) { return }
+      const notebookModel = panel.content.model
+      if (notebookModel === null) {
+        return
+      }
       notebookModel.cells.changed.connect((_, change) => {
-        // console.log('changed!', change)
-        if (change.type === 'remove') { return }
-        if (change.type === 'add') {
-          // const newCell = change.newValues[0]
-          // const isCode = newCell instanceof CodeCellModel
-          // console.log("added", newCell, 'code cell', isCode)
+        if (change.type !== 'add') {
+          return
         }
-
+        console.log('we have a new cell')
+        const newCellModel = change.newValues[0]
+        console.log(newCellModel.constructor.name, newCellModel)
+        // newCellModel.metadataChanged.connect((...args: any) => {
+        //     console.log('metadata changed', args)
+        // })
       })
     })
+
   }
 }
 
