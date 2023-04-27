@@ -5,7 +5,7 @@ My custom tweaks for using JLAB
 
 ## Requirements
 
-- JupyterLab >= 3.0
+- JupyterLab >= 4.0.0
 - jupyterlab-myst
 
 ## Install
