@@ -7,6 +7,18 @@ import {
   xpath_get, xpath_set, xpath_unset, xpath_insert, xpath_remove
 } from './xpath'
 
+// this will need changes for jupyterlab 4.0
+// see jupyterlab/grep -i metadata packages/cells/src/model.ts
+//
+// code like cellModel.metadata.has(key) will not work anymore
+// same for .get() and .set()
+// indeed now what we have is
+//
+// cellModel.metadata (read-only, and not recommended, for performance reasons)
+// cellModel.getMetadata(key)
+// cellModel.setMetadata(key, value)
+// cellModel.deleteMetadata(key)
+// cellModel.metadataChanged.connect((sender, args) => {
 
 export const md_get = (cell: Cell | ICellModel, xpath: Xpath, if_missing?: any): any => {
   if (cell instanceof Cell) {
