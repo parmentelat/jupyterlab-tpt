@@ -17,6 +17,7 @@ import {
   INotebookTracker, // NotebookPanel, // INotebookModel,
   Notebook,
   NotebookActions,
+  // NotebookTracker,
 } from '@jupyterlab/notebook'
 
 import {
@@ -122,12 +123,84 @@ const make_text_and_insert_section = (notebook: Notebook, depth: number) => {
   const model = activeCell?.model
   if (model === undefined) { return }
   // remove starting #'s if any
-  for (let i=4; i>0; i--) {
-    model.sharedModel.setSource(model.sharedModel.getSource().replace('#'.repeat(i)+' ', ''))
+  for (let i = 4; i > 0; i--) {
+    model.sharedModel.setSource(model.sharedModel.getSource().replace('#'.repeat(i) + ' ', ''))
   }
   if (depth === 0) { return }
   model.sharedModel.setSource(`${'#'.repeat(depth)} ${model.sharedModel.getSource()}`)
 }
+
+
+const sync_cell_tags_as_css_classes = (notebookTracker: INotebookTracker) => {
+  notebookTracker.widgetAdded.connect((tracker, panel) => {
+    const notebookModel = panel.content.model
+    if (notebookModel === null) {
+      return
+    }
+    notebookModel.cells.changed.connect((cellList, change) => {
+      if (change.type !== 'add') {
+        return
+      }
+      md_get // remove me
+      change.newValues.forEach((cellModel) => {
+        console.log('we have a new cell', cellModel)
+        // compute widgets attached to cellModel
+        const cellWidgets = notebookTracker.currentWidget?.content.widgets.filter(
+          (cell: Cell, index: number) => (cell.model.id === cellModel.id)
+        )
+        console.log(`found (1) ${cellWidgets?.length} cell widgets`)
+        cellModel.getMetadata('tags')?.forEach(
+          (tag: string) => cellWidgets?.forEach(cellWidget => cellWidget.addClass(`cell-tag-${tag}`)))
+
+
+
+        cellModel.metadataChanged.connect((sender: ICellModel, change) => {
+          console.debug('metadata changed', sender, change)
+          if (change.key !== 'tags') {
+            console.debug("ignoring non-tags metadata change")
+            return
+          }
+          const cellWidgets = notebookTracker.currentWidget?.content.widgets.filter(
+            (cell: Cell, index: number) => (cell.model.id === cellModel.id)
+          )
+          console.log(`found (2) ${cellWidgets?.length} cell widgets`)
+          if ((cellWidgets === undefined) || (cellWidgets?.length === 0)) {
+            console.warn("could not find cell widget for cell model", sender)
+            return
+          }
+          if (change.type === 'change') {
+            // compute difference between old and new tags
+            const oldTags = change.oldValue as string[]
+            const newTags = change.newValue as string[]
+            const addedTags = newTags.filter((tag) => !oldTags.includes(tag))
+            const removedTags = oldTags.filter((tag) => !newTags.includes(tag))
+            console.log('addedTags', addedTags)
+            console.log('removedTags', removedTags)
+            cellWidgets.forEach((cellWidget) => {
+              addedTags.forEach((tag) => cellWidget.addClass(`cell-tag-${tag}`))
+              removedTags.forEach((tag) => cellWidget.removeClass(`cell-tag-${tag}`))
+            })
+          } else if (change.type === 'add') {
+            console.log('add', change, change.newValue)
+            cellWidgets.forEach((cellWidget) => {
+              for (const tag of change.newValue) {
+                 cellWidget.addClass(`cell-tag-${tag}`)
+              }
+            })
+          } else if (change.type === 'remove') {
+            console.log('remove', change, change.newValue)
+            cellWidgets.forEach((cellWidget) => {
+              for (const tag of change.newValue) {
+                cellWidget.removeClass(`cell-tag-${tag}`)
+              }
+            })
+          }
+        })
+      })
+    })
+  })
+}
+
 
 /**
  * Initialization data for the jupyterlab-tpt extension.
@@ -162,16 +235,16 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: 'hide input for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input(cell, true))
     })
-    palette.addItem({command, category: 'Convenience'})
-    app.commands.addKeyBinding({command, keys: ['Alt Cmd 9'], selector: '.jp-Notebook'})
+    palette.addItem({ command, category: 'Convenience' })
+    app.commands.addKeyBinding({ command, keys: ['Alt Cmd 9'], selector: '.jp-Notebook' })
 
     command = 'show-input'
     app.commands.addCommand(command, {
       label: 'show input for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input(cell, false))
     })
-    palette.addItem({command, category: 'Convenience'})
-    app.commands.addKeyBinding({command, keys: ['Ctrl Alt 9'],  selector: '.jp-Notebook'})
+    palette.addItem({ command, category: 'Convenience' })
+    app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 9'], selector: '.jp-Notebook' })
 
 
 
@@ -180,20 +253,20 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: `hide input for all code cells that contain ${NEEDLE}`,
       execute: () => apply_on_cells(notebookTracker, Scope.All, (cell) => set_hide_input_needle(cell, true))
     })
-    palette.addItem({command, category: 'Convenience'})
-    app.commands.addKeyBinding({command, keys: ['Alt Cmd 8'], selector: '.jp-Notebook'})
+    palette.addItem({ command, category: 'Convenience' })
+    app.commands.addKeyBinding({ command, keys: ['Alt Cmd 8'], selector: '.jp-Notebook' })
 
     command = 'convenience:show-input-all-samples'
     app.commands.addCommand(command, {
       label: `show input for all code cells that contain ${NEEDLE}`,
       execute: () => apply_on_cells(notebookTracker, Scope.All, (cell) => set_hide_input_needle(cell, false))
     })
-    palette.addItem({command, category: 'Convenience'})
-    app.commands.addKeyBinding({command, keys: ['Ctrl Alt 8'], selector: '.jp-Notebook'})
+    palette.addItem({ command, category: 'Convenience' })
+    app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 8'], selector: '.jp-Notebook' })
 
 
     // Ctrl-0 to Ctrl-4 to set markdown sections
-    for (let depth=0; depth < 5; depth++) {
+    for (let depth = 0; depth < 5; depth++) {
 
       command = `convenience:section-level-${depth}`
       app.commands.addCommand(command, {
@@ -204,8 +277,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
           make_text_and_insert_section(notebook, depth)
         }
       })
-      palette.addItem({command, category: 'Convenience'})
-      app.commands.addKeyBinding({command, keys: [`Ctrl ${depth}`], selector: '.jp-Notebook'})
+      palette.addItem({ command, category: 'Convenience' })
+      app.commands.addKeyBinding({ command, keys: [`Ctrl ${depth}`], selector: '.jp-Notebook' })
     }
 
     // render-all-cells - unrender-all-cells (markdown actually)
@@ -219,60 +292,17 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: 'unrender all markdown cells',
       execute: () => apply_on_cells(notebookTracker, Scope.All, unrender_markdown)
     })
-    palette.addItem({command, category: 'Convenience'})
+    palette.addItem({ command, category: 'Convenience' })
     // control-e means end of ine if in edit mode
-    app.commands.addKeyBinding({command, keys: ['Ctrl E'], selector: '.jp-Notebook.jp-mod-commandMode'})
+    app.commands.addKeyBinding({ command, keys: ['Ctrl E'], selector: '.jp-Notebook.jp-mod-commandMode' })
 
-    app.commands.addKeyBinding({command: 'notebook:render-all-markdown', keys: ['Ctrl W'], selector: '.jp-Notebook'})
+    app.commands.addKeyBinding({ command: 'notebook:render-all-markdown', keys: ['Ctrl W'], selector: '.jp-Notebook' })
 
     // this is actually lowercase u and d, would need an explicit Shift otherwise
-    app.commands.addKeyBinding({command: 'notebook:move-cell-up', keys: ['U'], selector: '.jp-Notebook.jp-mod-commandMode'})
-    app.commands.addKeyBinding({command: 'notebook:move-cell-down', keys: ['D'], selector: '.jp-Notebook.jp-mod-commandMode'})
+    app.commands.addKeyBinding({ command: 'notebook:move-cell-up', keys: ['U'], selector: '.jp-Notebook.jp-mod-commandMode' })
+    app.commands.addKeyBinding({ command: 'notebook:move-cell-down', keys: ['D'], selector: '.jp-Notebook.jp-mod-commandMode' })
 
-
-    notebookTracker.widgetAdded.connect((tracker, panel) => {
-      const notebookModel = panel.content.model
-      if (notebookModel === null) {
-        return
-      }
-      notebookModel.cells.changed.connect((cellList, change) => {
-        if (change.type !== 'add') {
-          return
-        }
-        md_get // remove me
-        change.newValues.forEach((cellModel) => {
-          console.log('we have a new cell', cellModel)
-          cellModel.metadataChanged.connect((sender: ICellModel, change) => {
-            console.log('metadata changed', sender, change) 
-            if (change.key !== 'tags') {
-              console.debug("ignoring non-tags metadata change")
-              return
-            }
-            // compute widgets attached to sender
-            const cellWidgets = notebookTracker.currentWidget?.content.widgets.filter(
-              (cell: Cell, index: number) => (cell.model.id === cellModel.id)
-            )
-            console.log(`found ${cellWidgets?.length} cell widgets`)
-            if ((cellWidgets === undefined) || (cellWidgets?.length === 0)) {
-              console.warn("could not find cell widget for cell model", sender)
-              return
-            }
-            if (change.type === 'change') {
-              // compute difference between old and new tags
-              const oldTags = change.oldValue as string[]
-              const newTags = change.newValue as string[]
-              const addedTags = newTags.filter((tag) => !oldTags.includes(tag))
-              const removedTags = oldTags.filter((tag) => !newTags.includes(tag))
-              console.log('addedTags', addedTags)
-              console.log('removedTags', removedTags)
-              cellWidgets.forEach((cellWidget) => {
-                addedTags.forEach((tag) => cellWidget.addClass(`cell-tag-${tag}`))
-              })
-            }
-          })
-        })
-      })
-    })
+    sync_cell_tags_as_css_classes(notebookTracker)
   }
 }
 
