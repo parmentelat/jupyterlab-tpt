@@ -24,86 +24,86 @@ export const md_get = (cell: Cell | ICellModel, xpath: Xpath, if_missing?: any):
   if (cell instanceof Cell) {
     cell = cell.model
   }
-  const md = cell.metadata
   xpath = normalize(xpath)
   const [first, ...tail] = xpath
 
-  if (!md.has(first)) {
+  const start = cell.getMetadata(first)
+  if (start === undefined) {
     return if_missing
   } else {
-    return xpath_get(md.get(first) as XpathMap, tail)
+    return xpath_get(start as XpathMap, tail)
   }
 }
 
 export const md_set = (cell: Cell, xpath: Xpath, value: any): any => {
-  const md = cell.model.metadata
   xpath = normalize(xpath)
   const [first, ...tail] = xpath
+  const start = cell.model.getMetadata(first)
   if (tail.length === 0) {
-    md.set(first, value)
+    cell.model.setMetadata(first, value)
     return value
   }
-  const subtree = md.has(first) ? md.get(first) : {}
+  const subtree = start || {}
   const retcod = xpath_set(subtree as XpathMap, tail, value)
-  md.set(first, subtree)
+  cell.model.setMetadata(first, subtree)
   return retcod
 }
 
 export const md_unset = (cell: Cell, xpath: Xpath): boolean => {
-  const md = cell.model.metadata
   xpath = normalize(xpath)
   const [first, ...tail] = xpath
-  if (! md.has(first)) {
+  const start = cell.model.getMetadata(first)
+  if (start === undefined) {
     return false
   }
   if (tail.length === 0) {
-    md.delete(first)
+    cell.model.deleteMetadata(first)
     return true
   } else {
-    const subtree = md.get(first)
-    const retcod = xpath_unset(subtree as XpathMap, tail)
-    md.set(first, subtree)
+    const retcod = xpath_unset(start as XpathMap, tail)
+    cell.model.setMetadata(first, start)
     return retcod
   }
 }
 
 export const md_insert = (cell: Cell, xpath: Xpath, key: string) => {
-  const md = cell.model.metadata
   xpath = normalize(xpath)
   const [first, ...tail] = xpath
+
+  const start = cell.model.getMetadata(first)
   if (tail.length === 0) {
     let sublist : Array<string>
-    if (md.has(first)) {
-      sublist = md.get(first) as Array<string>
-      // use another object as otherwise .set() does not seem to propagate
+    if (start !== undefined) {
+      sublist = start as Array<string>
+      // use another object as otherwise .setMetadata() does not seem to propagate
       sublist = sublist.slice()
     } else {
       sublist = []
     }
     if (sublist.indexOf(key) < 0) {
       sublist.push(key)
-      md.set(first, sublist)
+      cell.model.setMetadata(first, sublist)
       return key
     } else {
       return undefined
     }
   } else {
-    const subtree = md.has(first) ? md.get(first) : {}
+    const subtree = start || {}
     const retcod = xpath_insert(subtree as XpathMap, tail, key)
-    md.set(first, subtree)
+    cell.model.setMetadata(first, subtree)
     return retcod
   }
 }
 
 export const md_remove = (cell: Cell, xpath: Xpath, key:string) => {
-  const md = cell.model.metadata
   xpath = normalize(xpath)
   const [first, ...tail] = xpath
-  if (! md.has(first)) {
+  const start = cell.model.getMetadata(first)
+  if (start === undefined) {
     return undefined
   }
   if (tail.length === 0) {
-    const sublist = md.get(first)
+    const sublist = start as Array<string>
     if (!(sublist instanceof Array)) {
       return undefined
     }
@@ -115,12 +115,12 @@ export const md_remove = (cell: Cell, xpath: Xpath, key:string) => {
     }
     // const as_array = sublist as Array<string>
     copy.splice(index, 1)
-    md.set(first, copy)
+    cell.model.setMetadata(first, copy)
     return key
   } else {
-    const subtree = md.get(first)
+    const subtree = start
     const retcod = xpath_remove(subtree as XpathMap, tail, key)
-    md.set(first, subtree)
+    cell.model.setMetadata(first, subtree)
     return retcod
   }
 }
