@@ -28,7 +28,7 @@ import {
 //import { Widget } from '@lumino/widgets'
 
 import {
-  /*md_get,*/ md_set, md_unset, md_insert, md_remove
+  md_get, md_set, md_unset, md_insert, md_remove
 } from './metadata'
 
 
@@ -234,16 +234,24 @@ const plugin: JupyterFrontEndPlugin<void> = {
       if (notebookModel === null) {
         return
       }
-      notebookModel.cells.changed.connect((_, change) => {
+      notebookModel.cells.changed.connect((cellList, change) => {
         if (change.type !== 'add') {
           return
         }
         console.log('we have a new cell')
         const newCellModel = change.newValues[0]
-        console.log(newCellModel.constructor.name, newCellModel)
+        console.log(newCellModel, cellList.length)
+        // looks like maybe with 4.0 we'll be able to do something like this
         // newCellModel.metadataChanged.connect((...args: any) => {
         //     console.log('metadata changed', args)
         // })
+        // but for now we'll go with something much simpler so that students
+        // who are not expected to mess with the colors themselves, will see the colors
+        for (const tag of md_get(newCellModel, 'tags', [])) {
+          console.log(`found metadata tag ${tag}`)
+          // on a full-fledged Cell instance we could do cell.addClass() (or hasClass....)
+          // but here ew have a CellModel and for now I can't find my way back to the Cell instance
+        }
       })
     })
 
