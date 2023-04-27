@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 
-import { Cell } from '@jupyterlab/cells'
+import { ICellModel, Cell } from '@jupyterlab/cells'
 
 import {
   XpathMap, Xpath, normalize,
@@ -8,13 +8,16 @@ import {
 } from './xpath'
 
 
-export const md_get = (cell: Cell, xpath: Xpath): any => {
-  const md = cell.model.metadata
+export const md_get = (cell: Cell | ICellModel, xpath: Xpath, if_missing?: any): any => {
+  if (cell instanceof Cell) {
+    cell = cell.model
+  }
+  const md = cell.metadata
   xpath = normalize(xpath)
   const [first, ...tail] = xpath
 
   if (!md.has(first)) {
-    return undefined
+    return if_missing
   } else {
     return xpath_get(md.get(first) as XpathMap, tail)
   }
