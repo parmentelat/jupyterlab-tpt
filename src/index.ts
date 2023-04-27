@@ -20,7 +20,8 @@ import {
 } from '@jupyterlab/notebook'
 
 import {
-  CodeCell, // ICellModel, // ICodeCellModel
+  ICellModel, // ICodeCellModel
+  CodeCell,
   MarkdownCell,
   Cell,
 } from '@jupyterlab/cells'
@@ -105,7 +106,7 @@ const set_hide_input_needle = (cell: Cell, hidden: boolean) => {
   if (cell instanceof CodeCell) {
     // need to access the cell model
     const model = cell.model
-    if (model.value.text.toLowerCase().indexOf(NEEDLE) !== -1) {
+    if (model.sharedModel.getSource().toLowerCase().indexOf(NEEDLE) !== -1) {
       set_hide_input(cell, hidden)
     }
   }
@@ -122,10 +123,10 @@ const make_text_and_insert_section = (notebook: Notebook, depth: number) => {
   if (model === undefined) { return }
   // remove starting #'s if any
   for (let i=4; i>0; i--) {
-    model.value.text = model.value.text.replace('#'.repeat(i)+' ', '')
+    model.sharedModel.setSource(model.sharedModel.getSource().replace('#'.repeat(i)+' ', ''))
   }
   if (depth === 0) { return }
-  model.value.text = `${'#'.repeat(depth)} ${model.value.text}`
+  model.sharedModel.setSource(`${'#'.repeat(depth)} ${model.sharedModel.getSource()}`)
 }
 
 /**
@@ -238,23 +239,40 @@ const plugin: JupyterFrontEndPlugin<void> = {
         if (change.type !== 'add') {
           return
         }
-        console.log('we have a new cell')
-        const newCellModel = change.newValues[0]
-        console.log(newCellModel, cellList.length)
-        // looks like maybe with 4.0 we'll be able to do something like this
-        // newCellModel.metadataChanged.connect((...args: any) => {
-        //     console.log('metadata changed', args)
-        // })
-        // but for now we'll go with something much simpler so that students
-        // who are not expected to mess with the colors themselves, will see the colors
-        for (const tag of md_get(newCellModel, 'tags', [])) {
-          console.log(`found metadata tag ${tag}`)
-          // on a full-fledged Cell instance we could do cell.addClass() (or hasClass....)
-          // but here ew have a CellModel and for now I can't find my way back to the Cell instance
-        }
+        md_get // remove me
+        change.newValues.forEach((cellModel) => {
+          console.log('we have a new cell', cellModel)
+          cellModel.metadataChanged.connect((sender: ICellModel, change) => {
+            console.log('metadata changed', sender, change) 
+            if (change.key !== 'tags') {
+              console.debug("ignoring non-tags metadata change")
+              return
+            }
+            // compute widgets attached to sender
+            const cellWidgets = notebookTracker.currentWidget?.content.widgets.filter(
+              (cell: Cell, index: number) => (cell.model.id === cellModel.id)
+            )
+            console.log(`found ${cellWidgets?.length} cell widgets`)
+            if ((cellWidgets === undefined) || (cellWidgets?.length === 0)) {
+              console.warn("could not find cell widget for cell model", sender)
+              return
+            }
+            if (change.type === 'change') {
+              // compute difference between old and new tags
+              const oldTags = change.oldValue as string[]
+              const newTags = change.newValue as string[]
+              const addedTags = newTags.filter((tag) => !oldTags.includes(tag))
+              const removedTags = oldTags.filter((tag) => !newTags.includes(tag))
+              console.log('addedTags', addedTags)
+              console.log('removedTags', removedTags)
+              cellWidgets.forEach((cellWidget) => {
+                addedTags.forEach((tag) => cellWidget.addClass(`cell-tag-${tag}`))
+              })
+            }
+          })
+        })
       })
     })
-
   }
 }
 
