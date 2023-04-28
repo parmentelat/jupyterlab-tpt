@@ -19,7 +19,8 @@
   "files": [
     "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
     "style/**/*.{css,js,eot,gif,html,jpg,json,png,svg,woff2,ttf}",
-    "style/index.js"
+    "style/index.js",
+    "schema/*.json"
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -55,11 +56,12 @@
     "watch:src": "tsc -w"
   },
   "dependencies": {
-    "@jupyterlab/application": "^4.0.0-rc.1",
-    "@jupyterlab/apputils": "^4.0.0-rc.1",
-    "@jupyterlab/notebook": "^4.0.0-rc.1",
-    "@lumino/widgets": "^2.0.1",
-    "jupyterlab-courselevels": "^0.3.0"
+    "@jupyterlab/application": "^4.0.0",
+    "@jupyterlab/apputils": "^4.0.0",
+    "@jupyterlab/notebook": "^4.0.0",
+    "jupyterlab-courselevels": "^0.3.0",
+    "@jupyterlab/settingregistry": "^4.0.0",
+    "@lumino/widgets": "^2.0.1"
   },
   "devDependencies": {
     "@jupyterlab/builder": "^4.0.0-rc.1",
@@ -94,6 +96,7 @@
   },
   "jupyterlab": {
     "extension": true,
+    "schemaDir": "schema",
     "outputDir": "jupyterlab_tpt/labextension"
   }
 }

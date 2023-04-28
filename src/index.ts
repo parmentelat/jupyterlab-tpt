@@ -26,6 +26,9 @@ import {
 
 // md_clean may be broken
 import { md_get, md_set, md_unset, md_insert, md_remove } from 'jupyterlab-celltagsclasses'
+import { ISettingRegistry } from '@jupyterlab/settingregistry'
+
+//import { Widget } from '@lumino/widgets'
 
 import { Scope, apply_on_cells } from 'jupyterlab-celltagsclasses'
 
@@ -98,6 +101,7 @@ const toggle_tag = (cell: Cell, tag: string) => {
     md_insert(cell, 'tags', tag)
   }
 }
+const PLUGIN_ID = 'jupyterlab-tpt:plugin'
 
 /**
  * Initialization data for the jupyterlab-tpt extension.
@@ -105,9 +109,13 @@ const toggle_tag = (cell: Cell, tag: string) => {
 const plugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-tpt:plugin',
   autoStart: true,
-  requires: [ICommandPalette, INotebookTracker],
-  activate: (app: JupyterFrontEnd, palette: ICommandPalette, notebookTracker: INotebookTracker) => {
-    console.log('extension jupyterlab-tpt is activating')
+  requires: [ICommandPalette, INotebookTracker, ISettingRegistry],
+  activate: (
+      app: JupyterFrontEnd,
+      palette: ICommandPalette,
+      notebookTracker: INotebookTracker,
+      settingRegistry: ISettingRegistry) => {
+    console.log('JupyterLab extension jupyterlab-tpt is activating')
     // console.log('ICommandPalette', palette)
     // console.log('INotebookTracker', notebookTracker)
 
@@ -124,10 +132,37 @@ const plugin: JupyterFrontEndPlugin<void> = {
     // Cmd modifier is ignored on non-Mac platforms.
     // Alt is option on mac
 
+    let [limit, flag] = [0, false]
+
+    function loadSetting(setting: ISettingRegistry.ISettings): void {
+      // Read the settings and convert to the correct type
+      limit = setting.get('limit').composite as number;
+      flag = setting.get('flag').composite as boolean;
+
+      console.log(
+        `Settings Example extension: Limit is set to '${limit}' and flag to '${flag}'`
+      );
+    }
+
+    Promise.all([app.restored, settingRegistry.load(PLUGIN_ID)])
+    .then(([_, setting]) => {
+      loadSetting(setting)
+      setting.changed.connect(loadSetting)
+    })
+
     let command
 
     // Option-Command-9 = toggle (hide-input) on all selected cells
     // Ctrl-Alt-9 = show (wrt hide-input) on all selected cells
+    command = 'convenience:show-settings'
+    app.commands.addCommand(command, {
+      label: 'show settings',
+      execute: () => console.log(`Current settings: limit = ${limit} (type=${typeof limit}) and flag = ${flag}`)
+    })
+    palette.addItem({ command, category: 'Convenience' })
+    app.commands.addKeyBinding({ command, keys: ['Alt Cmd 7'], selector: '.jp-Notebook' })
+
+
     command = 'convenience:hide-input'
     app.commands.addCommand(command, {
       label: 'hide input for all selected cells',
