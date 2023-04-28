@@ -10,18 +10,15 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application'
 
-//import {ICommandPalette, MainAreaWidget } from '@jupyterlab/apputils';
 import { ICommandPalette } from '@jupyterlab/apputils'
 
 import {
-  INotebookTracker, // NotebookPanel, // INotebookModel,
+  INotebookTracker,
   Notebook,
   NotebookActions,
-  // NotebookTracker,
 } from '@jupyterlab/notebook'
 
 import {
-  ICellModel, // ICodeCellModel
   CodeCell,
   MarkdownCell,
   Cell,
@@ -30,7 +27,7 @@ import {
 //import { Widget } from '@lumino/widgets'
 
 import {
-  md_get, md_set, md_unset, md_insert, md_remove
+  /*md_get,*/ md_set, md_unset, md_insert, md_remove
 } from './metadata'
 
 
@@ -128,77 +125,6 @@ const make_text_and_insert_section = (notebook: Notebook, depth: number) => {
   }
   if (depth === 0) { return }
   model.sharedModel.setSource(`${'#'.repeat(depth)} ${model.sharedModel.getSource()}`)
-}
-
-
-const sync_cell_tags_as_css_classes = (notebookTracker: INotebookTracker) => {
-  notebookTracker.widgetAdded.connect((tracker, panel) => {
-    const notebookModel = panel.content.model
-    if (notebookModel === null) {
-      return
-    }
-    notebookModel.cells.changed.connect((cellList, change) => {
-      if (change.type !== 'add') {
-        return
-      }
-      md_get // remove me
-      change.newValues.forEach((cellModel) => {
-        console.log('we have a new cell', cellModel)
-        // compute widgets attached to cellModel
-        const cellWidgets = notebookTracker.currentWidget?.content.widgets.filter(
-          (cell: Cell, index: number) => (cell.model.id === cellModel.id)
-        )
-        console.log(`found (1) ${cellWidgets?.length} cell widgets`)
-        cellModel.getMetadata('tags')?.forEach(
-          (tag: string) => cellWidgets?.forEach(cellWidget => cellWidget.addClass(`cell-tag-${tag}`)))
-
-
-
-        cellModel.metadataChanged.connect((sender: ICellModel, change) => {
-          console.debug('metadata changed', sender, change)
-          if (change.key !== 'tags') {
-            console.debug("ignoring non-tags metadata change")
-            return
-          }
-          const cellWidgets = notebookTracker.currentWidget?.content.widgets.filter(
-            (cell: Cell, index: number) => (cell.model.id === cellModel.id)
-          )
-          console.log(`found (2) ${cellWidgets?.length} cell widgets`)
-          if ((cellWidgets === undefined) || (cellWidgets?.length === 0)) {
-            console.warn("could not find cell widget for cell model", sender)
-            return
-          }
-          if (change.type === 'change') {
-            // compute difference between old and new tags
-            const oldTags = change.oldValue as string[]
-            const newTags = change.newValue as string[]
-            const addedTags = newTags.filter((tag) => !oldTags.includes(tag))
-            const removedTags = oldTags.filter((tag) => !newTags.includes(tag))
-            console.log('addedTags', addedTags)
-            console.log('removedTags', removedTags)
-            cellWidgets.forEach((cellWidget) => {
-              addedTags.forEach((tag) => cellWidget.addClass(`cell-tag-${tag}`))
-              removedTags.forEach((tag) => cellWidget.removeClass(`cell-tag-${tag}`))
-            })
-          } else if (change.type === 'add') {
-            console.log('add', change, change.newValue)
-            cellWidgets.forEach((cellWidget) => {
-              for (const tag of change.newValue) {
-                 cellWidget.addClass(`cell-tag-${tag}`)
-              }
-            })
-          } else if (change.type === 'remove') {
-            console.log('remove', change, change.newValue)
-            cellWidgets.forEach((cellWidget) => {
-              for (const tag of change.newValue) {
-                cellWidget.removeClass(`cell-tag-${tag}`)
-              }
-            })
-          }
-        })
-      })
-    })
-  })
 }
 
 
@@ -302,7 +228,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     app.commands.addKeyBinding({ command: 'notebook:move-cell-up', keys: ['U'], selector: '.jp-Notebook.jp-mod-commandMode' })
     app.commands.addKeyBinding({ command: 'notebook:move-cell-down', keys: ['D'], selector: '.jp-Notebook.jp-mod-commandMode' })
 
-    sync_cell_tags_as_css_classes(notebookTracker)
   }
 }
 
