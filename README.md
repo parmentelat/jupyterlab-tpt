@@ -24,7 +24,7 @@ To remove the extension, execute:
 pip uninstall jupyterlab_tpt
 ```
 
-## What does it do ?
+## misc keystrokes
 
 Remember that Alt = Option on the mac
 
@@ -44,10 +44,17 @@ Remember that Alt = Option on the mac
 | u | `notebook:move-cell-up` |
 | d | `notebook:move-cell-down` |
 
-## TODO
+## `sync_cell_tags_as_css_classes`
 
-* in nb-courselevels, we set e.g. `data-tag-basic=true` and/or `data-tag-basic=true`
-* how to inject css ?
+each cell has its widget (the DOM element) classes kept in sync in terms of the cell's tags;
+for example, after using 'Alt-Cmd-9', the current cell will have class `cell-tag-hide-input` added
+
+for the record, in nb-courselevels - i.e. in the classic notebook - we had set `data-tag-basic=true`; 
+it does not matter much if we don't follow the same convention here
+
+## courselevels
+
+still TODO
 
 | keystroke | command | what |
 |-:|:-:|:-|
@@ -58,7 +65,7 @@ Remember that Alt = Option on the mac
 |||
 | ???    | remove-empty-tags |
 
-## Contributing
+## Development
 
 ### Development install
 
