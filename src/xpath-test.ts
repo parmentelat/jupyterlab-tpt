@@ -1,14 +1,15 @@
 /* eslint-disable prettier/prettier */
 
 import {
-    xpath_get, xpath_set, xpath_unset, xpath_insert, xpath_remove
+    xpath_get, xpath_set, xpath_unset,  xpath_insert, xpath_remove, xpath_clean,
 } from './xpath'
 
-const md = {}
+/* not guaranteed to work by side-effects only */
+let md = {}
 
 // uncomment to debug
 const checkpoint = (message: string) => {
-    // console.log('------', message, '\n', JSON.stringify(md))
+    console.log('------', message, '\n', JSON.stringify(md))
     message
 }
 
@@ -79,3 +80,15 @@ console.assert(xpath_unset(md, 'hide_input') === true, '073')
 console.assert(xpath_get(md, 'hide_input') === undefined, '074')
 
 checkpoint('unchanged')
+
+const xpaths = [ 'empty-list', 'nested.empty-list' ]
+for (const xpath of xpaths) {
+    console.assert(xpath_insert(md, xpath, 'foo') === 'foo', '081')
+    console.assert(xpath_insert(md, xpath, 'bar') === 'bar', '082')
+    console.assert(xpath_remove(md, xpath, 'foo') === 'foo', '083')
+    console.assert(xpath_remove(md, xpath, 'bar') === 'bar', '084')
+    md = xpath_clean(md, '')
+    console.assert(xpath_get(md, xpath) === undefined, '085')
+    checkpoint(`unchanged after inserting/cleaning in ${xpath}`)
+}
+

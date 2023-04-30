@@ -23,9 +23,15 @@ export type Xpath = string | string[]
 export const normalize = (xpath: Xpath): string[] => {
   if (typeof xpath === 'string') {
     const string = xpath as string
-    xpath = string.split('.')
+    if (string.length === 0) {
+      return []
+    }
+    return string.split('.')
+  } else if (xpath instanceof Array) {
+    return xpath
+  } else {
+    console.error(`xpath must be string or array, got ${xpath}`)
   }
-  return xpath
 }
 
 
@@ -139,6 +145,59 @@ const _manage_metadata = (
   return recurse(data, action, xpath_list, value)
 }
 
+const _clean_metadata = (data: XpathMap, xpath: Xpath): XpathMap => {
+
+  const not_empty = (x) => {
+    if (x instanceof Array) {
+      return x.length !== 0
+    } else if (x instanceof Object) {
+      return Object.keys(x).length !== 0
+    } else {
+      return true
+    }
+  }
+
+  const clean_array = (data: any[]) => {
+    return data.map(clean).filter(not_empty)
+  }
+  const clean_object = (data: Record<string, any>) => {
+    const result = {}
+    for (const key in data) {
+      const value = data[key]
+      const cleaned = clean(value)
+      if (not_empty(cleaned)) {
+        result[key] = cleaned
+      }
+    }
+    return result
+  }
+
+  const clean = (data) => {
+
+    if (data instanceof Array) {
+      return clean_array(data)
+    } else if (data instanceof Object) {
+      return clean_object(data)
+    } else {
+      return data
+    }
+  }
+
+  const xpath_list = normalize(xpath)
+  if (xpath_list.length === 0) {
+    return clean(data)
+  } else {
+    const start = xpath_get(data, xpath_list)
+    if (start === undefined) {
+      console.debug(`xpath_clean: nothing to clean at ${xpath}`)
+      return data
+    } else {
+      return xpath_set(data, xpath_list, clean(start))
+    }
+  }
+}
+
+
 export const xpath_get = (metadata: XpathMap, xpath: Xpath) =>
   _manage_metadata(metadata, Action.Get, xpath, undefined)
 export const xpath_set = (metadata: XpathMap, xpath: Xpath, value: any) =>
@@ -150,4 +209,4 @@ export const xpath_insert = (metadata: XpathMap, xpath: Xpath, key: string) =>
 export const xpath_remove = (metadata: XpathMap, xpath: Xpath, key: string) =>
   _manage_metadata(metadata, Action.Remove, xpath, key)
 export const xpath_clean = (metadata: XpathMap, xpath: Xpath) =>
-  _manage_metadata(metadata, Action.Clean, xpath, undefined)
+  _clean_metadata(metadata, xpath)
