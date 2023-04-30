@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 
-import { 
+import {
     xpath_get, xpath_set, xpath_unset, xpath_insert, xpath_remove
 } from './xpath'
 
@@ -79,4 +79,3 @@ console.assert(xpath_unset(md, 'hide_input') === true, '073')
 console.assert(xpath_get(md, 'hide_input') === undefined, '074')
 
 checkpoint('unchanged')
-

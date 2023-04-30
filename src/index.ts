@@ -27,18 +27,11 @@ import {
 //import { Widget } from '@lumino/widgets'
 
 import {
-  /*md_get,*/ md_set, md_unset, md_insert, md_remove
+  /*md_get,*/ md_set, md_unset, md_insert, md_remove, md_toggle,
 } from './metadata'
 
 
-/*
-the logic of applying a function on a set of cells
-if on_selected is false
-  then to_apply is called on all cells in the notebook
-if on_selected is true
-  then to_apply is called on all selected cells, or the active cell
-  if no multiple selection was made
- */
+/* the logic of applying a function on a set of cells */
 enum Scope {
   All,        // run on all cells
   Active,     // the active cell only
@@ -162,15 +155,23 @@ const plugin: JupyterFrontEndPlugin<void> = {
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input(cell, true))
     })
     palette.addItem({ command, category: 'Convenience' })
-    app.commands.addKeyBinding({ command, keys: ['Alt Cmd 9'], selector: '.jp-Notebook' })
+    //app.commands.addKeyBinding({ command, keys: ['Alt Cmd 9'], selector: '.jp-Notebook' })
 
-    command = 'show-input'
+    command = 'convenience:show-input'
     app.commands.addCommand(command, {
       label: 'show input for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input(cell, false))
     })
     palette.addItem({ command, category: 'Convenience' })
-    app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 9'], selector: '.jp-Notebook' })
+    // app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 9'], selector: '.jp-Notebook' })
+
+    command = 'convenience:toggle-show-input'
+    app.commands.addCommand(command, {
+      label: 'toggle show input for all selected cells',
+      execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => md_toggle(cell, 'tags', 'hide-input'))
+    })
+    palette.addItem({ command, category: 'Convenience' })
+    app.commands.addKeyBinding({ command, keys: ['Alt Cmd 9'], selector: '.jp-Notebook' })
 
 
 

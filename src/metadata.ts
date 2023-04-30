@@ -1,5 +1,27 @@
 /* eslint-disable prettier/prettier */
 
+//
+// Metadata helper tools
+// (*) md_get: get a metadata value
+//         e.g. md_get(cell, "some.path.in.the.metadata")
+//           or md_get(cell, ["some", "path", "in", "the", "metadata"])
+//           or md_get(cell, ["some", "path", "in", "the", "metadata"], "default value")
+// (*) md_set: set a metadata value
+//         e.g. md_set(cell, "some.path.in.the.metadata", "new value")
+//           or md_set(cell, ["some", "path", "in", "the", "metadata"], "new value")
+// (*) md_unset: unset a metadata value
+//         e.g. md_unset(cell, "some.path.in.the.metadata")
+//           or md_unset(cell, ["some", "path", "in", "the", "metadata"])
+//
+// (*) md_has: check if a value is present in a metadata list
+//         e.g. md_has(cell, "tags", "tag-to-check")
+// (*) md_insert: insert a value in a metadata list
+//         e.g. md_insert(cell, "tags", "added-tag")
+// (*) md_remove: remove a value from a metadata list
+//         e.g. md_remove(cell, "tags", "removed-tag")
+// (*) md_toggle: toggle a value in a metadata list
+//
+
 import { ICellModel, Cell } from '@jupyterlab/cells'
 
 import {
@@ -7,18 +29,8 @@ import {
   xpath_get, xpath_set, xpath_unset, xpath_insert, xpath_remove
 } from './xpath'
 
-// this will need changes for jupyterlab 4.0
-// see jupyterlab/grep -i metadata packages/cells/src/model.ts
-//
-// code like cellModel.metadata.has(key) will not work anymore
-// same for .get() and .set()
-// indeed now what we have is
-//
-// cellModel.metadata (read-only, and not recommended, for performance reasons)
-// cellModel.getMetadata(key)
-// cellModel.setMetadata(key, value)
-// cellModel.deleteMetadata(key)
-// cellModel.metadataChanged.connect((sender, args) => {
+
+// atomic values
 
 export const md_get = (cell: Cell | ICellModel, xpath: Xpath, if_missing?: any): any => {
   if (cell instanceof Cell) {
@@ -64,6 +76,23 @@ export const md_unset = (cell: Cell, xpath: Xpath): boolean => {
     cell.model.setMetadata(first, start)
     return retcod
   }
+}
+
+
+// lists (i.e. tags)
+
+export const md_has = (cell: Cell, xpath: Xpath, key: string) => {
+  xpath = normalize(xpath)
+  const [first, ...tail] = xpath
+  const start = cell.model.getMetadata(first)
+  if (start === undefined) {
+    return false
+  }
+  const list = xpath_get(start as XpathMap, tail)
+  if (list === undefined) {
+    return false
+  }
+  return list.indexOf(key) >= 0
 }
 
 export const md_insert = (cell: Cell, xpath: Xpath, key: string) => {
@@ -122,5 +151,14 @@ export const md_remove = (cell: Cell, xpath: Xpath, key:string) => {
     const retcod = xpath_remove(subtree as XpathMap, tail, key)
     cell.model.setMetadata(first, subtree)
     return retcod
+  }
+}
+
+export const md_toggle = (cell: Cell, xpath: Xpath, key: string) => {
+  xpath = normalize(xpath)
+  if ( ! md_has(cell, xpath, key)) {
+    return md_insert(cell, xpath, key)
+  } else {
+    return md_remove(cell, xpath, key)
   }
 }
