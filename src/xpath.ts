@@ -29,7 +29,7 @@ export const normalize = (xpath: Xpath): string[] => {
 }
 
 
-const manage_metadata = (
+const _manage_metadata = (
   data: XpathMap,      // intended to be cell.metadata
   action: Action,
   xpath: Xpath,
@@ -140,12 +140,14 @@ const manage_metadata = (
 }
 
 export const xpath_get = (metadata: XpathMap, xpath: Xpath) =>
-  manage_metadata(metadata, Action.Get, xpath, undefined)
+  _manage_metadata(metadata, Action.Get, xpath, undefined)
 export const xpath_set = (metadata: XpathMap, xpath: Xpath, value: any) =>
-  manage_metadata(metadata, Action.Set, xpath, value)
+  _manage_metadata(metadata, Action.Set, xpath, value)
 export const xpath_unset = (metadata: XpathMap, xpath: Xpath) =>
-  manage_metadata(metadata, Action.Unset, xpath, undefined)
+  _manage_metadata(metadata, Action.Unset, xpath, undefined)
 export const xpath_insert = (metadata: XpathMap, xpath: Xpath, key: string) =>
-  manage_metadata(metadata, Action.Insert, xpath, key)
+  _manage_metadata(metadata, Action.Insert, xpath, key)
 export const xpath_remove = (metadata: XpathMap, xpath: Xpath, key: string) =>
-  manage_metadata(metadata, Action.Remove, xpath, key)
+  _manage_metadata(metadata, Action.Remove, xpath, key)
+export const xpath_clean = (metadata: XpathMap, xpath: Xpath) =>
+  _manage_metadata(metadata, Action.Clean, xpath, undefined)
