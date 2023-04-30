@@ -1,7 +1,13 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable prettier/prettier */
 
-// helpers to manage a cell's metadata
+// helpers to manage a JS object
+//
+// in this module we are only concerned about doing side effects
+// in a JavaScript object
+
+
+// what to do on the passed object
 enum Action {
   Get,      // get the metadata at that xpath
   Set,      // set the metadata at that xpath
@@ -9,6 +15,7 @@ enum Action {
   Insert,   // insert the value inside that xpath (should point to a list)
   Remove,   // undo insert
 }
+
 
 export type XpathMap = Record<string, any>
 export type Xpath = string | string[]

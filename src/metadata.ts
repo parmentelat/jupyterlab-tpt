@@ -2,25 +2,29 @@
 
 //
 // Metadata helper tools
+// a xpath can be either a dot-separated string, or an array of strings
+//
+//  single valued metadata:
+//
 // (*) md_get: get a metadata value
 //         e.g. md_get(cell, "some.path.in.the.metadata")
+//           or md_get(cell, "some.path.in.the.metadata", "default value")
 //           or md_get(cell, ["some", "path", "in", "the", "metadata"])
-//           or md_get(cell, ["some", "path", "in", "the", "metadata"], "default value")
 // (*) md_set: set a metadata value
 //         e.g. md_set(cell, "some.path.in.the.metadata", "new value")
-//           or md_set(cell, ["some", "path", "in", "the", "metadata"], "new value")
 // (*) md_unset: unset a metadata value
 //         e.g. md_unset(cell, "some.path.in.the.metadata")
-//           or md_unset(cell, ["some", "path", "in", "the", "metadata"])
+//
+//  list valued metadata (typically xpath = 'tags')
 //
 // (*) md_has: check if a value is present in a metadata list
-//         e.g. md_has(cell, "tags", "tag-to-check")
+//         e.g. md_has(cell, "path.to.tags", "tag-to-check")
 // (*) md_insert: insert a value in a metadata list
-//         e.g. md_insert(cell, "tags", "added-tag")
+//         e.g. md_insert(cell, "path.to.tags", "added-tag")
 // (*) md_remove: remove a value from a metadata list
-//         e.g. md_remove(cell, "tags", "removed-tag")
+//         e.g. md_remove(cell, "path.to.tags", "removed-tag")
 // (*) md_toggle: toggle a value in a metadata list
-//
+//         e.g. md_toggle(cell, "path.to.tags", "toggled-tag")
 
 import { ICellModel, Cell } from '@jupyterlab/cells'
 
@@ -79,7 +83,7 @@ export const md_unset = (cell: Cell, xpath: Xpath): boolean => {
 }
 
 
-// lists (i.e. tags)
+// lists (e.g. tags)
 
 export const md_has = (cell: Cell, xpath: Xpath, key: string) => {
   xpath = normalize(xpath)
