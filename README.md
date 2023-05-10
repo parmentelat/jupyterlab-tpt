@@ -137,20 +137,3 @@ See [RELEASE](RELEASE.md)
     ...
   })
   ```
-
-## testing
-
-### the metadata module
-
-probably suboptimal but that's my first..
-
-```terminal
-npm install -g typescript '@types/node'
-```
-
-```terminal
-rm src/*js
-tsc src/xpath*ts && node src/xpath-test.js
-```
-
-I have tried to use `ts-node` but to no avail so far
