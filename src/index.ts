@@ -27,8 +27,8 @@ import {
 //import { Widget } from '@lumino/widgets'
 
 import {
-  /*md_get,*/ md_set, md_unset, md_insert, md_remove, md_toggle, md_clean
-} from './metadata'
+  md_get, md_set, md_unset, md_insert, md_remove, /*md_toggle, */md_clean
+} from './metadata' //from '@jupyterlab-celltagsclasses'
 
 
 /* the logic of applying a function on a set of cells */
