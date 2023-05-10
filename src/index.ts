@@ -87,6 +87,14 @@ const set_hide_input = (cell: Cell, hidden: boolean) => {
   }
 }
 
+const toggle_hide_input = (cell: Cell) => {
+  if (md_get(cell, 'tags.hide-input')) {
+    set_hide_input(cell, false)
+  } else {
+    set_hide_input(cell, true)
+  }
+}
+
 
 // this is specific to the web course, where we use a toolset with functions
 // that have this in their name
@@ -148,14 +156,14 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     let command
 
-
+    // Option-Command-9 = toggle (hide-input) on all selected cells
+    // Ctrl-Alt-9 = show (wrt hide-input) on all selected cells
     command = 'convenience:hide-input'
     app.commands.addCommand(command, {
       label: 'hide input for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input(cell, true))
     })
     palette.addItem({ command, category: 'Convenience' })
-    //app.commands.addKeyBinding({ command, keys: ['Alt Cmd 9'], selector: '.jp-Notebook' })
 
     command = 'convenience:show-input'
     app.commands.addCommand(command, {
@@ -163,12 +171,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input(cell, false))
     })
     palette.addItem({ command, category: 'Convenience' })
-    // app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 9'], selector: '.jp-Notebook' })
+    app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 9'], selector: '.jp-Notebook' })
 
     command = 'convenience:toggle-show-input'
     app.commands.addCommand(command, {
       label: 'toggle show input for all selected cells',
-      execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => md_toggle(cell, 'tags', 'hide-input'))
+      execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => toggle_hide_input(cell))
     })
     palette.addItem({ command, category: 'Convenience' })
     app.commands.addKeyBinding({ command, keys: ['Alt Cmd 9'], selector: '.jp-Notebook' })
