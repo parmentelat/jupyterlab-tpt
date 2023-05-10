@@ -153,6 +153,8 @@ const _clean_metadata = (data: XpathMap, xpath: Xpath): XpathMap => {
       return x.length !== 0
     } else if (x instanceof Object) {
       return Object.keys(x).length !== 0
+    } else if ((typeof x) === 'string') {
+      return x.length !== 0
     } else {
       return true
     }

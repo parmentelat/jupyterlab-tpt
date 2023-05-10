@@ -108,3 +108,17 @@ console.assert(JSON.stringify(xpath_clean(md2, 'cells')) === "[]", '092')
 console.assert(JSON.stringify(xpath_clean(md2, 'metadata')) === "{}", '093')
 console.assert(JSON.stringify(xpath_clean(md2, 'metadata.kernelspec')) === '{"cells":[],"metadata":{}}', '094')
 
+
+const md3 = {
+    'empty-string': '',
+    'metadata': {
+        'kernelspec': {},
+        'language_info': [],
+        'empty-string': "",
+    },
+}
+
+console.assert(JSON.stringify(xpath_clean(md3, '')) === "{}", '101')
+console.assert(JSON.stringify(xpath_clean(md3, 'empty-string')) === '""', '102')
+console.assert(JSON.stringify(xpath_clean(md3, 'metadata')) === "{}", '103')
+console.assert(JSON.stringify(xpath_clean(md3, 'metadata.kernelspec')) === '{"empty-string":"","metadata":{}}', '104')
