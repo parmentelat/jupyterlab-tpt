@@ -27,7 +27,7 @@ import {
 //import { Widget } from '@lumino/widgets'
 
 import {
-  /*md_get,*/ md_set, md_unset, md_insert, md_remove, md_toggle,
+  /*md_get,*/ md_set, md_unset, md_insert, md_remove, md_toggle, md_clean
 } from './metadata'
 
 
@@ -190,6 +190,15 @@ const plugin: JupyterFrontEndPlugin<void> = {
     })
     palette.addItem({ command, category: 'Convenience' })
     app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 8'], selector: '.jp-Notebook' })
+
+
+    command = 'convenience:metadata-clean'
+    app.commands.addCommand(command, {
+      label: `clean metadata for all selected cells`,
+      execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => md_clean(cell, ''))
+    })
+    palette.addItem({ command, category: 'Convenience' })
+    app.commands.addKeyBinding({ command, keys: ['Alt Cmd 7'], selector: '.jp-Notebook' })
 
 
     // Ctrl-0 to Ctrl-4 to set markdown sections

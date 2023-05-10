@@ -31,6 +31,7 @@ export const normalize = (xpath: Xpath): string[] => {
     return xpath
   } else {
     console.error(`xpath must be string or array, got ${xpath}`)
+    return []
   }
 }
 
@@ -147,7 +148,7 @@ const _manage_metadata = (
 
 const _clean_metadata = (data: XpathMap, xpath: Xpath): XpathMap => {
 
-  const not_empty = (x) => {
+  const not_empty = (x: any) : boolean => {
     if (x instanceof Array) {
       return x.length !== 0
     } else if (x instanceof Object) {
@@ -157,11 +158,11 @@ const _clean_metadata = (data: XpathMap, xpath: Xpath): XpathMap => {
     }
   }
 
-  const clean_array = (data: any[]) => {
+  const clean_array = (data: any[]) : any[] => {
     return data.map(clean).filter(not_empty)
   }
-  const clean_object = (data: Record<string, any>) => {
-    const result = {}
+  const clean_object = (data: Record<string, any>): Record<string, any> => {
+    const result = {} as Record<string, any>
     for (const key in data) {
       const value = data[key]
       const cleaned = clean(value)
@@ -172,7 +173,7 @@ const _clean_metadata = (data: XpathMap, xpath: Xpath): XpathMap => {
     return result
   }
 
-  const clean = (data) => {
+  const clean = (data: any[] | Record<string, any>) => {
 
     if (data instanceof Array) {
       return clean_array(data)
@@ -189,7 +190,8 @@ const _clean_metadata = (data: XpathMap, xpath: Xpath): XpathMap => {
   } else {
     const start = xpath_get(data, xpath_list)
     if (start === undefined) {
-      console.debug(`xpath_clean: nothing to clean at ${xpath}`)
+      // nothing serious here, just a debug message
+      //console.debug(`DBG: xpath_clean: nothing to clean at ${xpath} - from ${xpath_list}`)
       return data
     } else {
       return xpath_set(data, xpath_list, clean(start))

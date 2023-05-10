@@ -145,7 +145,7 @@ See [RELEASE](RELEASE.md)
 probably suboptimal but that's my first..
 
 ```terminal
-npm install -g ts-node typescript '@types/node'
+npm install -g typescript '@types/node'
 ```
 
 ```terminal

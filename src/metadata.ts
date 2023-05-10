@@ -25,12 +25,20 @@
 //         e.g. md_remove(cell, "path.to.tags", "removed-tag")
 // (*) md_toggle: toggle a value in a metadata list
 //         e.g. md_toggle(cell, "path.to.tags", "toggled-tag")
+//
+// clean up
+// (*) md_clean: remove empty metadata elements
+//         e.g. md_clean(cell, "path.to.subtree")
+//         or more typically
+//              md_clean(cell, "")
+//          will alter the cell's metadata so as to remove empty lists or empty keys
+
 
 import { ICellModel, Cell } from '@jupyterlab/cells'
 
 import {
   XpathMap, Xpath, normalize,
-  xpath_get, xpath_set, xpath_unset, xpath_insert, xpath_remove
+  xpath_get, xpath_set, xpath_unset, xpath_insert, xpath_remove, xpath_clean
 } from './xpath'
 
 
@@ -164,5 +172,32 @@ export const md_toggle = (cell: Cell, xpath: Xpath, key: string) => {
     return md_insert(cell, xpath, key)
   } else {
     return md_remove(cell, xpath, key)
+  }
+}
+
+
+export const md_clean = (cell:Cell, xpath: Xpath) => {
+  xpath = normalize(xpath)
+  const [first, ...tail] = xpath
+  if (first === undefined) {
+    console.log(cell.model.metadata)
+    // no xpath, clean the whole metadata
+    for (const key of Object.entries(cell.model.metadata)) {
+      const xpath = key as Xpath
+      const new_value = xpath_clean(md_get(cell, xpath), "")
+      if ((new_value === undefined) || (new_value.length === 0)) {
+        md_unset(cell, xpath)
+      } else {
+        md_set(cell, xpath, new_value)
+      }
+    }
+  } else {
+    const subtree = md_get(cell, first)
+    const new_value = xpath_clean(subtree, tail)
+    if ((new_value === undefined) || (new_value.length === 0)) {
+      md_unset(cell, first)
+    } else {
+      md_set(cell, first, new_value)
+    }
   }
 }
