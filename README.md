@@ -30,7 +30,7 @@ Remember that Alt = Option on the mac
 
 | keystroke | command | what |
 |-:|:-:|:-|
-| Alt-Cmd-9 | `convenience:hide-input` | hide input on selected cells |
+| Alt-Cmd-9 | `convenience:toggle-show-input` | hide or show input on selected cells |
 | Ctrl-Alt-9 | `convenience:show-input` | show input on selected cells |
 | Alt-Cmd-8 | `convenience:hide-input-all-samples` | hide input on all code cells with `tools.sample_from` |
 | Ctrl-Alt-8 | `convenience:show-input-all-samples` | hide input on all code cells with `tools.sample_from` |
@@ -44,26 +44,15 @@ Remember that Alt = Option on the mac
 | u | `notebook:move-cell-up` |
 | d | `notebook:move-cell-down` |
 
-## `sync_cell_tags_as_css_classes`
+## `using cell tags`
 
-each cell has its widget (the DOM element) classes kept in sync in terms of the cell's tags;
-for example, after using 'Alt-Cmd-9', the current cell will have class `cell-tag-hide-input` added
+thanks to the `jupyterlab-celltagsclasses` extension, each cell has its widget
+(the DOM element) classes kept in sync in terms of the cell's tags; for example,
+after using 'Alt-Cmd-9', the current cell will have class `cell-tag-hide-input`
+added
 
 for the record, in nb-courselevels - i.e. in the classic notebook - we had set `data-tag-basic=true`; 
 it does not matter much if we don't follow the same convention here
-
-## courselevels
-
-still TODO
-
-| keystroke | command | what |
-|-:|:-:|:-|
-| ctrl-x | `courselevels:toggle-basic` |
-| ctrl-y | `courselevels:toggle-intermediate` |
-| ctrl-z | `courselevels:toggle-advanced` |
-| ???    | `courselevels:toggle-frame` |
-|||
-| ???    | remove-empty-tags |
 
 ## Development
 
