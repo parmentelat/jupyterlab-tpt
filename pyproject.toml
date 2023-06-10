@@ -22,7 +22,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
-    'jupyterlab-celltagsclasses'
+    'jupyterlab-courselevels'
 ]
 dynamic = ["version", "description", "authors", "urls", "keywords"]
 
