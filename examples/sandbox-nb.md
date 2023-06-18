@@ -2,7 +2,6 @@
 celltoolbar: Edit Metadata
 jupytext:
   cell_metadata_filter: all,-hidden,-heading_collapsed,-run_control,-trusted
-  formats: md:myst
   notebook_metadata_filter: all,-language_info,-toc,-jupytext.text_representation.jupytext_version,-jupytext.text_representation.format_version
   text_representation:
     extension: .md
@@ -29,7 +28,7 @@ Licence CC BY-NC-ND, Thierry Parmentelat
 
 # purpose
 
-playing with the various ways to implement:
+summarize most of our notebook recipes, 
 
 * regular admonitions
 * hide-input artefact (a code cell whose input code is hidden)
@@ -38,27 +37,21 @@ playing with the various ways to implement:
 * course levels:
   * using tags to specifiy a level among basic=green, intermediate=blue, advanced=red
   * also the ability to put a frame around a cell
+* miscell MyST tricks
 
-and hopefully all this should work in the following contexts
+and check how that renders in the following contexts
 
 * jupyter book output, which is now our primary output medium
 * classic notebook, which although it is almost deprecated, remains our main editing tool
 * jlab, but apparently this is mostly a hopeless goal
 
-+++ {"tags": ["framed_cell"]}
-
-## references
-
-* jbook: <https://jupyterbook.org/en/stable/interactive/hiding.html>
-* myst: <https://myst-tools.org/docs/spec/admonitions>
-
-+++
++++ {"jp-MarkdownHeadingCollapsed": true}
 
 ## admonitions
 
 ```{code-cell} ipython3
 # this is the required piece
-%pip show jupyterlab-myst
+#%pip show jupyterlab-myst
 ```
 
 ```{admonition} without the dropdown class
@@ -130,7 +123,7 @@ not sure how to change the color then
 
 ## hide-input
 
-+++
++++ {"jp-MarkdownHeadingCollapsed": true}
 
 ### code cells
 
@@ -296,6 +289,76 @@ Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots 
 
 Where does it come from?
 Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+
++++
+
+## miscell
+
++++
+
+### dollarmath
+
+same for latex-math inline $\forall x\in \mathbb{C}$ like this, or double-dollars like that
+
+$$
+\forall x\in \mathbb{C}
+$$
+
++++
+
+### strikethrough
+
+this requires an extra config step ~~so that one can see text in strikethrough mode~~
+
+not yet working with jupyterlab(-myst)
+
++++
+
+### download links
+
++++ {"tags": []}
+
+#### MyST download role
+
+mostly we use this to create a link to download an exercise as a zip
+
+```{error} BEWARE
+this works in the jupyter book output only at this point
+```
+
+ {download}`commencez par télécharger le zip<./downloadable.zip>`
+
++++
+
+#### regular html link
+
+instead we could try and use a regular `<a>` tag; 
+it remains to check however if that is going to play well with jupyter-book though
+
+
+avec la construction standard markdown pour les liens `[]()`: [commencez par télécharger le zip](./dowloadable.zip)
+
+---
+le tag html `<a>` marche vraiment très mal: <a href="./downloadable.zip">commencez par télécharger le zip</a>
+
++++
+
+### iframe
+
++++
+
+#### html tag
+
+not working in jlab, and works in jupyter book only if the target is in `_static`
+
+<iframe src="_static/addresses-final.html" width="100%" height="600px">
+
++++ {"tags": ["framed_cell"]}
+
+## references
+
+* jbook: <https://jupyterbook.org/en/stable/interactive/hiding.html>
+* myst: <https://myst-tools.org/docs/spec/admonitions>
 
 +++ {"tags": []}
 
