@@ -24,7 +24,7 @@ rise:
 
 Licence CC BY-NC-ND, Thierry Parmentelat
 
-+++
++++ {"tags": []}
 
 # purpose
 
@@ -37,13 +37,15 @@ summarize most of our notebook recipes,
 * course levels:
   * using tags to specifiy a level among basic=green, intermediate=blue, advanced=red
   * also the ability to put a frame around a cell
-* miscell MyST tricks
+* miscell usual tricks (link to a downloadable file, iframe with some static html, ...)
 
 and check how that renders in the following contexts
 
 * jupyter book output, which is now our primary output medium
-* classic notebook, which although it is almost deprecated, remains our main editing tool
-* jlab, but apparently this is mostly a hopeless goal
+* jlab4, with a cocktail of extensions, at least
+  * jupytext, myst, courselevels
+* notebook 7, which as of 2023 June is about to get released 
+* there was also nbclassic, but it's getting deprecated so..
 
 +++ {"jp-MarkdownHeadingCollapsed": true}
 
