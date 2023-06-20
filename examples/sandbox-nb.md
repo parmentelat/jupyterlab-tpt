@@ -24,10 +24,17 @@ rise:
 
 Licence CC BY-NC-ND, Thierry Parmentelat
 
++++
+
+
+
 +++ {"tags": []}
 
 # purpose
 
++++ {"tags": []}
+
+````{attention} what
 summarize most of our notebook recipes, 
 
 * regular admonitions
@@ -38,6 +45,11 @@ summarize most of our notebook recipes,
   * using tags to specifiy a level among basic=green, intermediate=blue, advanced=red
   * also the ability to put a frame around a cell
 * miscell usual tricks (link to a downloadable file, iframe with some static html, ...)
+````
+
++++ {"tags": []}
+
+````{seealso} targets
 
 and check how that renders in the following contexts
 
@@ -46,100 +58,137 @@ and check how that renders in the following contexts
   * jupytext, myst, courselevels
 * notebook 7, which as of 2023 June is about to get released 
 * there was also nbclassic, but it's getting deprecated so..
-
-+++ {"jp-MarkdownHeadingCollapsed": true}
-
-## admonitions
+````
 
 ```{code-cell} ipython3
 # this is the required piece
-#%pip show jupyterlab-myst
+#%pip show jupyterlab-myst jupyterlab-jupytext jupyterlab-courselevels
 ```
 
-```{admonition} without the dropdown class
-this is a regular *admonition* with a custom title  
-not sure how to change the color then
-```
-
-+++
-
-```{tip} 
-1/10 Let's give readers a helpful hint! - this one uses ```
-```
-
-+++
-
-:::{note}
-2/10 note: you can use either ``` or :::
-:::
+## admonitions
 
 +++
 
 ```{attention}
-3/10 let us try this
+without the dropdown class
+this is a regular *admonition* with a custom title  
+any of the types below accept a superseded title
 ```
 
 +++
 
-```{caution}
-4/10 let us try this
+````{tip} 
+Let's give readers a helpful `tip` - this one uses quadruple ```` like this
 ```
+    ````{tip}
+    a tip
+    ````
+```
+````
 
 +++
 
-```{danger}
-5/10 let us try this
+````{hint} my title
+this is a `hint` admonition with an overridden title
 ```
+    ````{hint} my title
+    some text
+    ````
+```
+````
 
 +++
 
-```{error}
-6/10 let us try this
-```
+````{seealso}
+let us try `seealso`
+````
 
 +++
 
-```{hint}
-7/10 let us try this
+````{note}
+this is a `note`
 ```
+:::{note}
+this would work too
+:::
+```
+````
 
 +++
 
-```{important}
-8/10 let us try this
-```
+````{important}
+let us try `important`
+````
 
 +++
 
-```{seealso}
-9/10 let us try this
-```
+````{admonition} This requires an ad hoc title
+let us try `admonition`
+````
 
 +++
 
-```{warning}
-10/10 let us try this
+````{attention} my title
+this is an `attention` admonition with an overridden title
 ```
+    ````{attention} my title
+    some text
+    ````
+```
+````
+
++++
+
+````{caution}
+let us try `caution`
+````
+
++++
+
+````{warning}
+let us try `warning`
+````
+
++++
+
+````{danger}
+let us try `danger`
+````
+
++++
+
+````{error}
+let us try `error`
+````
 
 +++
 
 ## hide-input
 
-+++ {"jp-MarkdownHeadingCollapsed": true}
++++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
 
 ### code cells
 
++++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
+
+````{caution}
 the next code cell is marked as
 
-1. `metadata.hide_input=true`
-1. and metadata.tags contains 'hide-input'
+1. `metadata.tags` contains `hide-input`
+1. and also `metadata.hide_input=true`  
+  see below, this second setting is not useful unless you aim at nbclassic
+````
 
-* because of (1) the cell input will not show under nbclassic  
++++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
+
+````{note}
+* thanks to (1) the jb HTML output will come as a collapsible
+* thanks to the `jupyterlab-courselevels` extension, with (1) the code cell input should be hidden in jupyterlab (and hopefully nb7 as well)
+* because of (2) the cell input will not show under nbclassic  
   this requires the jupyter contrib extensions installed, and the hide-input extension enabled
-* thanks to (2) the jb HTML output will come as a collapsible
-* however under jupyter lab **the code cell input is still visible**
+````
 
-+++
++++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
 
 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ 2 hide-input cells below
 
@@ -153,6 +202,14 @@ tags: [hide-input]
 ---
 # this text whould be hidden
 print("should show the output but not the code")
+```
+
+something
+
++++
+
+```{caution}
+sdf
 ```
 
 ```{code-cell} ipython3
@@ -172,19 +229,17 @@ print('and another hide-input cell')
 
 here is an simple untagged admonition with the `dropdown` class:
 
-```{admonition} Click the button to reveal!
+````{admonition} Click the button to reveal!
 :class: dropdown
-Some hidden toggle content!
+Some hidden collapsible content !
 ```
+    ```{admonition} click me
+    :class: dropdown
+    the text to be hidden
+    ```
+````
 
-+++
-
-:::{danger} with class dropdown
-:class: dropdown
-note: you can use either ``` or :::
-:::
-
-+++
++++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
 
 ### using raw HTML
 
@@ -200,17 +255,31 @@ and the rest of the message is just mentioned directly in the &lt;details&gt; ta
 
 however apparently this requires extra configuration ?
 
-+++
++++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
 
 ## course levels
 
-+++
++++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
+
+somthing we had in place before admonitions; 3 levels defined, + the framed cell business
+
+(in the mix, it comes with css support for the `hide-input` cell tag, tested above)
+
++++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
 
 ### code
 
-```{code-cell} ipython3
-:tags: [level_basic]
++++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
 
+code cells will work in both worlds (jlab + jbook)
+
+```{code-cell} ipython3
+---
+editable: true
+slideshow:
+  slide_type: ''
+tags: [level_basic]
+---
 # a basic cell
 
 def fact(n):
@@ -221,12 +290,22 @@ def fact(n):
 ```
 
 ```{code-cell} ipython3
+---
+editable: true
+slideshow:
+  slide_type: ''
+tags: []
+---
 fact(10)
 ```
 
 ```{code-cell} ipython3
-:tags: [level_intermediate]
-
+---
+editable: true
+slideshow:
+  slide_type: ''
+tags: [level_intermediate]
+---
 # an intermediate cell
 
 def fact(n):
@@ -234,12 +313,22 @@ def fact(n):
 ```
 
 ```{code-cell} ipython3
+---
+editable: true
+slideshow:
+  slide_type: ''
+tags: []
+---
 fact(10)
 ```
 
 ```{code-cell} ipython3
-:tags: [level_advanced]
-
+---
+editable: true
+slideshow:
+  slide_type: ''
+tags: [level_advanced]
+---
 # an advanced cell
 
 from functools import reduce
@@ -250,12 +339,24 @@ def fact(n):
 ```
 
 ```{code-cell} ipython3
+---
+editable: true
+slideshow:
+  slide_type: ''
+tags: []
+---
 fact(10)
 ```
 
++++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
+
 ### text
 
-+++ {"tags": ["framed_cell"]}
+unfortunately text cells is another matter entirely, as when producing markdown (intermediary step in jbook to produce html) the cell structure gets lost entirely
+
+<https://github.com/orgs/executablebooks/discussions/1033#discussioncomment-6198957>
+
++++ {"tags": ["framed_cell"], "editable": true, "slideshow": {"slide_type": ""}}
 
 #### let's start with a framed cell
 
@@ -264,7 +365,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 Where does it come from?
 Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
 
-+++ {"tags": ["level_basic"]}
++++ {"tags": ["level_basic"], "editable": true, "slideshow": {"slide_type": ""}}
 
 #### basic text (^X)
 
@@ -280,7 +381,7 @@ Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots 
 
 +++ {"tags": ["level_advanced"]}
 
-#### advanced text (^M)
+#### advanced text (^Z)
 
 Where does it come from?
 Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
@@ -354,6 +455,29 @@ le tag html `<a>` marche vraiment très mal: <a href="./downloadable.zip">commen
 not working in jlab, and works in jupyter book only if the target is in `_static`
 
 <iframe src="_static/addresses-final.html" width="100%" height="600px">
+
+```{code-cell} ipython3
+### matplotlib
+```
+
+```{code-cell} ipython3
+import numpy as np
+
+X = np.linspace(-10, 10)
+Y = X ** 2
+```
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+#%matplotlib notebook
+#%matplotlib widget
+%matplotlib ipympl
+```
+
+```{code-cell} ipython3
+plt.figure()
+plt.plot(X, Y);
+```
 
 +++ {"tags": ["framed_cell"]}
 
