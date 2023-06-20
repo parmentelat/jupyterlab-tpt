@@ -1,7 +1,4 @@
 ---
-# override in the course-local nbhosting.yaml if needed
-tracks-filter: [ python ]
-
 tracks:
 - description: notebook 7 on top of jlab 4
   id: jlab4-nb7
