@@ -1,15 +1,6 @@
 format: jb-book
+parts:
+- caption: sample
+  chapters:
+  - file: sandbox-nb
 root: sandbox-nb
-# parts:
-# - caption: intro
-#   chapters:
-#   - glob: 0-*-nb
-# - caption: installations
-#   chapters:
-#   - glob: 1-*-nb
-# - caption: "compl\xE9ments"
-#   chapters:
-#   - glob: 2-*-nb
-# - caption: "r\xE9sum\xE9"
-#   chapters:
-#   - glob: 3-*-nb

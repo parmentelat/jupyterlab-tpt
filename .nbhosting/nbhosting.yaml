@@ -1,0 +1,21 @@
+---
+# override in the course-local nbhosting.yaml if needed
+tracks-filter: [ python ]
+
+tracks:
+- description: notebook 7 on top of jlab 4
+  id: jlab4-nb7
+  name: Notebook7
+  sections:
+  - name: sample
+    notebooks:
+    - examples/sandbox-nb.md
+
+builds:
+  - id: nb7
+    name: Notebook 7
+    description: sample notebook
+    directory: examples
+    script: |
+      pip install jupyter-book
+      jupyter-book build .
