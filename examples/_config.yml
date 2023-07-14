@@ -41,3 +41,19 @@ sphinx:
     html_show_copyright: false
     # not quite convincing but...
     html_extra_path: ['media']
+  extra_extensions:
+    # for mermaid diagrams, see also
+    # https://opencomputinglab.github.io/SubjectMatterNotebooks/diagram/sphinx-diagrammers.html
+    # https://blog.ouseful.info/2021/11/02/previewing-sphinx-and-jupyter-book-rendered-mermaid-and-wavedrom-diagrams-in-vs-code/
+    # - myst_parser
+    - sphinxcontrib.mermaid
+    # looks like we're going to need this if/when it gets released
+    # https://github.com/mgaitan/sphinxcontrib-mermaid/pull/76
+    # - sphinxcontrib.mermaid_inheritance
+    #
+    # other diagraming tools that may turn out useful
+    # - sphinxcontrib.wavedrom
+    # - sphinxcontrib.plantuml
+    # - sphinxcontrib.tikz
+    # - sphinxcontrib.blockdiag
+
