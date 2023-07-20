@@ -45,6 +45,7 @@ summarize most of our notebook recipes,
   * using tags to specifiy a level among basic=green, intermediate=blue, advanced=red
   * also the ability to put a frame around a cell
 * miscell usual tricks (link to a downloadable file, iframe with some static html, ...)
+* mermaid: some inline (git)graphs using `mermaid.js`
 ````
 
 +++ {"tags": []}
@@ -165,11 +166,11 @@ let us try `error`
 
 ## hide-input
 
-+++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
++++ {"slideshow": {"slide_type": ""}, "tags": []}
 
 ### code cells
 
-+++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
++++ {"slideshow": {"slide_type": ""}, "tags": []}
 
 ````{caution}
 the next code cell is marked as
@@ -179,7 +180,7 @@ the next code cell is marked as
   see below, this second setting is not useful unless you aim at nbclassic
 ````
 
-+++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
++++ {"slideshow": {"slide_type": ""}, "tags": []}
 
 ````{note}
 * thanks to (1) the jb HTML output will come as a collapsible
@@ -188,13 +189,12 @@ the next code cell is marked as
   this requires the jupyter contrib extensions installed, and the hide-input extension enabled
 ````
 
-+++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
++++ {"slideshow": {"slide_type": ""}, "tags": []}
 
 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ 2 hide-input cells below
 
 ```{code-cell} ipython3
 ---
-editable: true
 hide_input: true
 slideshow:
   slide_type: ''
@@ -206,7 +206,6 @@ print("should show the output but not the code")
 
 ```{code-cell} ipython3
 ---
-editable: true
 hide_input: true
 slideshow:
   slide_type: ''
@@ -222,7 +221,7 @@ print('and another hide-input cell')
 
 ## collapsable
 
-+++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
++++ {"slideshow": {"slide_type": ""}, "tags": []}
 
 here is an simple untagged admonition with the `dropdown` class:
 
@@ -236,7 +235,7 @@ Some hidden collapsible content !
     ```
 ````
 
-+++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
++++ {"slideshow": {"slide_type": ""}, "tags": []}
 
 ### using raw HTML
 
@@ -252,27 +251,26 @@ and the rest of the message is just mentioned directly in the &lt;details&gt; ta
 
 however apparently this requires extra configuration ?
 
-+++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
++++ {"slideshow": {"slide_type": ""}, "tags": []}
 
 ## course levels
 
-+++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
++++ {"slideshow": {"slide_type": ""}, "tags": []}
 
 somthing we had in place before admonitions; 3 levels defined, + the framed cell business
 
 (in the mix, it comes with css support for the `hide-input` cell tag, tested above)
 
-+++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
++++ {"slideshow": {"slide_type": ""}, "tags": []}
 
 ### code
 
-+++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
++++ {"slideshow": {"slide_type": ""}, "tags": []}
 
 code cells will work in both worlds (jlab + jbook)
 
 ```{code-cell} ipython3
 ---
-editable: true
 slideshow:
   slide_type: ''
 tags: [level_basic]
@@ -288,7 +286,6 @@ def fact(n):
 
 ```{code-cell} ipython3
 ---
-editable: true
 slideshow:
   slide_type: ''
 tags: []
@@ -298,7 +295,6 @@ fact(10)
 
 ```{code-cell} ipython3
 ---
-editable: true
 slideshow:
   slide_type: ''
 tags: [level_intermediate]
@@ -311,7 +307,6 @@ def fact(n):
 
 ```{code-cell} ipython3
 ---
-editable: true
 slideshow:
   slide_type: ''
 tags: []
@@ -321,7 +316,6 @@ fact(10)
 
 ```{code-cell} ipython3
 ---
-editable: true
 slideshow:
   slide_type: ''
 tags: [level_advanced]
@@ -337,7 +331,6 @@ def fact(n):
 
 ```{code-cell} ipython3
 ---
-editable: true
 slideshow:
   slide_type: ''
 tags: []
@@ -345,7 +338,7 @@ tags: []
 fact(10)
 ```
 
-+++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
++++ {"slideshow": {"slide_type": ""}, "tags": []}
 
 ### text
 
@@ -353,7 +346,7 @@ unfortunately text cells is another matter entirely, as when producing markdown 
 
 <https://github.com/orgs/executablebooks/discussions/1033#discussioncomment-6198957>
 
-+++ {"tags": ["framed_cell"], "editable": true, "slideshow": {"slide_type": ""}}
++++ {"tags": ["framed_cell"], "slideshow": {"slide_type": ""}}
 
 #### let's start with a framed cell
 
@@ -362,7 +355,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 Where does it come from?
 Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
 
-+++ {"tags": ["level_basic"], "editable": true, "slideshow": {"slide_type": ""}}
++++ {"tags": ["level_basic"], "slideshow": {"slide_type": ""}}
 
 #### basic text (^X)
 

@@ -1,15 +1,25 @@
 # ---
 # jupyter:
 #   jupytext:
+#     cell_metadata_filter: all,-hidden,-heading_collapsed,-run_control,-trusted
+#     custom_cell_magics: kql
+#     notebook_metadata_filter: 'all, -jupytext.text_representation.jupytext_version,
+#       -jupytext.text_representation.format_version,
+#
+#       -language_info.version, -language_info.codemirror_mode.version, -language_info.codemirror_mode,
+#
+#       -language_info.file_extension, -language_info.mimetype, -toc'
 #     text_representation:
 #       extension: .py
 #       format_name: percent
-#       format_version: '1.3'
-#       jupytext_version: 1.14.5
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
+#   language_info:
+#     name: python
+#     nbconvert_exporter: python
+#     pygments_lexer: ipython3
 # ---
 
 # %% [markdown]
@@ -47,7 +57,7 @@ print('hello')
 # %% [markdown] user_expressions=[]
 # text cell 4
 
-# %% tags=["hide-input"] hide_input=true
+# %% hide_input=true tags=["hide-input"]
 # this cell should get hide-input with option-command 8 even if not active
 
 class Foo: pass
