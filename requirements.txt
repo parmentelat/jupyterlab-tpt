@@ -2,18 +2,13 @@
 
 jupyterlab
 notebook
-# not yet released
+# not yet released (or install with pip install --pre)
 /Users/tparment/git/jupytext/dist/jupytext-1.15.0.dev1-py3-none-any.whl
-# not yet stable
 jupyterlab-myst
 
 # not installing this at once,
 # and installing afterwards, seems to work better
 jupyterlab-courselevels
-
-# would be useful for vs-code but creates some trouble
-# as jupyterlab looses its tool, so let's keep it out for now
-# ipykernel
 
 # contents
 ipympl
@@ -24,3 +19,7 @@ ipywidgets >= 8.0
 sphinxcontrib_mermaid
 ipythontutor
 nbautoeval
+
+# would be useful for vs-code but creates some trouble
+# as jupyterlab looses its toolbar, so let's keep it out for now
+# ipykernel
