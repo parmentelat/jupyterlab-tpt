@@ -24,16 +24,24 @@ To remove the extension, execute:
 pip uninstall jupyterlab_tpt
 ```
 
+## misc commands
+
+type `convenience` in the command palette to see the list of commands
+
 ## misc keystrokes
 
 Remember that Alt = Option on the mac
 
 | keystroke | command | what |
 |-:|:-:|:-|
+| Alt-Cmd-0 | `convenience:toggle-show-input` | hide or show output on selected cells |
+| Ctrl-Alt-0 | `convenience:show-input` | show output on selected cells |
 | Alt-Cmd-9 | `convenience:toggle-show-input` | hide or show input on selected cells |
 | Ctrl-Alt-9 | `convenience:show-input` | show input on selected cells |
 | Alt-Cmd-8 | `convenience:hide-input-all-samples` | hide input on all code cells with `tools.sample_from` |
 | Ctrl-Alt-8 | `convenience:show-input-all-samples` | hide input on all code cells with `tools.sample_from` |
+| Alt-Cmd-7 | `convenience:metadata-clean-selected` | clean metadata on selected cells |
+| Ctrl-Alt-7 | `convenience:metadata-clean-all` | clean metadata on all cells |
 | Ctrl-0 | `convenience:section-level-0` | remove section header (#s) |
 | Ctrl-1 | `convenience:section-level-1` | set as section 1 header |
 | Ctrl-2 |
