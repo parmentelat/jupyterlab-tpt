@@ -22,16 +22,16 @@
 #     pygments_lexer: ipython3
 # ---
 
-# %% [markdown]
+# %% [markdown] hide_input=true hide_output=true tags=["hide-input"]
 # # header 1
 
-# %% [markdown] user_expressions=[]
+# %% [markdown] tags=["level_basic"]
 # text cell 1
 
-# %% [markdown] hide_input=false user_expressions=[]
+# %% [markdown] hide_input=false tags=["level_intermediate", "hide-input"]
 # ## header 2
 
-# %% [markdown] user_expressions=[]
+# %% [markdown] tags=["level_advanced"]
 # text cell 2
 
 # %% hide_input=false
@@ -39,22 +39,22 @@
 print('hello')
 
 
-# %% [markdown] hide_input=false user_expressions=[]
+# %% [markdown] hide_input=false
 # ## header 2 again
 
-# %% hide_input=false
+# %% hide_input=true tags=["raises-exception", "hide-input"]
 # and a code cell 2
 
-# %% [markdown] hide_input=false user_expressions=[]
+# %% [markdown] hide_input=false tags=["raises-exception"]
 # ### header 3
 
-# %% [markdown] user_expressions=[]
+# %% [markdown]
 # text cell 3
 
-# %% [markdown] hide_input=false slideshow={"slide_type": "slide"} user_expressions=[]
+# %% [markdown] hide_input=false slideshow={"slide_type": "slide"} tags=["level_basic"]
 # #### and a header 4
 
-# %% [markdown] user_expressions=[]
+# %% [markdown]
 # text cell 4
 
 # %% hide_input=true tags=["hide-input"]
