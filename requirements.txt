@@ -3,7 +3,7 @@
 jupyterlab
 notebook
 # not yet released (or install with pip install --pre)
-/Users/tparment/git/jupytext/dist/jupytext-1.15.0.dev1-py3-none-any.whl
+/Users/tparment/git/jupytext/dist/jupytext-1.15.0.dev2-py3-none-any.whl
 jupyterlab-myst
 
 # not installing this at once,
