@@ -5,3 +5,6 @@
 */
 
 
+.cell.tag-raises-exception {
+    background-color: red;
+}

@@ -115,6 +115,13 @@ const clean_cell_metadata = (cell: Cell) => {
   }
 }
 
+const toggle_tag = (cell: Cell, tag: string) => {
+  if (md_get(cell, 'tags', tag)) {
+    md_remove(cell, 'tags', tag)
+  } else {
+    md_insert(cell, 'tags', tag)
+  }
+}
 
 /**
  * Initialization data for the jupyterlab-tpt extension.
@@ -264,6 +271,22 @@ const plugin: JupyterFrontEndPlugin<void> = {
     app.commands.addKeyBinding({ command: 'notebook:move-cell-up', keys: ['U'], selector: '.jp-Notebook.jp-mod-commandMode' })
     app.commands.addKeyBinding({ command: 'notebook:move-cell-down', keys: ['D'], selector: '.jp-Notebook.jp-mod-commandMode' })
 
+    command = 'convenience:toggle-raises-exception'
+    app.commands.addCommand(command, {
+      label: 'toggle raises-exception for all selected cells',
+      execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => toggle_tag(cell, 'raises-exception')),
+    })
+    palette.addItem({ command, category: 'Convenience' })
+    app.commands.addKeyBinding({ command, keys: ['Alt Cmd 6'], selector: '.jp-Notebook' })
+
+
+    command = 'convenience:set-raises-exception'
+    app.commands.addCommand(command, {
+      label: 'set raises-exception for all selected cells',
+      execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => md_insert(cell, 'tags', 'raises-exception')),
+    })
+    palette.addItem({ command, category: 'Convenience' })
+    app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 6'], selector: '.jp-Notebook' })
   }
 }
 

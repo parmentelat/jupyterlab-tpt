@@ -42,6 +42,8 @@ Remember that Alt = Option on the mac
 | Ctrl-Alt-8 | `convenience:show-input-all-samples` | hide input on all code cells with `tools.sample_from` |
 | Alt-Cmd-7 | `convenience:metadata-clean-selected` | clean metadata on selected cells |
 | Ctrl-Alt-7 | `convenience:metadata-clean-all` | clean metadata on all cells |
+| Alt-Cmd-6 | `convenience:toggle-raises-exception` | toggle the `raises-exception` tag |
+| Ctrl-Alt-6 | `convenience:set-raises-exception` | set the `raises-exception` tag |
 | Ctrl-0 | `convenience:section-level-0` | remove section header (#s) |
 | Ctrl-1 | `convenience:section-level-1` | set as section 1 header |
 | Ctrl-2 |
