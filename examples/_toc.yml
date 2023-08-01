@@ -1,5 +1,9 @@
 format: jb-book
 parts:
+- caption: real stuff
+  chapters:
+  - file: 1-01-os-terminal-nb
+  - file: 2-01-numpy-introduction-nb
 - caption: sandbox chapter
   chapters:
   - file: sandbox-nb
