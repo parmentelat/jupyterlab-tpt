@@ -1,9 +1,11 @@
 format: jb-book
 parts:
+# randomly take one .py and one .md
+# from the actual courses
 - caption: real stuff
   chapters:
   - file: 1-01-os-terminal-nb
-  - file: 2-01-numpy-introduction-nb
+  - file: 1-01-numpy-introduction-nb
 - caption: sandbox chapter
   chapters:
   - file: sandbox-nb

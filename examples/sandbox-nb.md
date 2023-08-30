@@ -34,7 +34,9 @@ Licence CC BY-NC-ND, Thierry Parmentelat
 
 +++ {"tags": []}
 
-````{attention} ### what
+## what
+
+````{attention} what
 summarize most of our notebook recipes, 
 
 * regular admonitions
@@ -65,6 +67,37 @@ and check how that renders in the following contexts
 # this is the required piece
 #%pip show jupyterlab-myst jupyterlab-jupytext jupyterlab-courselevels
 ```
+
+## matplotlib
+
++++
+
+**see more details in companion notebook sandbox3-mpl.ipynb**
+
+```{code-cell} ipython3
+# %matplotlib widget
+```
+
+```{code-cell} ipython3
+:tags: [framed_cell]
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+X = np.linspace(0, 2*np.pi)
+Y = np.sin(X)
+```
+
+```{code-cell} ipython3
+plt.ion();
+```
+
+```{code-cell} ipython3
+plt.figure()
+plt.plot(X, Y);
+```
+
++++ {"jp-MarkdownHeadingCollapsed": true}
 
 ## admonitions
 
@@ -162,7 +195,7 @@ let us try `danger`
 let us try `error`
 ````
 
-+++
++++ {"jp-MarkdownHeadingCollapsed": true}
 
 ## hide-input
 
@@ -217,7 +250,7 @@ print('and another hide-input cell')
 
 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ hide-input cells above
 
-+++
++++ {"jp-MarkdownHeadingCollapsed": true}
 
 ## collapsable
 
@@ -475,30 +508,33 @@ not working in jlab, and works in jupyter book only if the target is in `_static
 <iframe src="_static/addresses-final.html" width="100%" height="600px">
 </iframe>
 
-+++
++++ {"editable": true, "slideshow": {"slide_type": ""}, "tags": []}
 
-### matplotlib
+### iframe - update (useful for e.g. youtube)
 
-```{code-cell} ipython3
-import numpy as np
-
-X = np.linspace(-10, 10)
-Y = X ** 2
-```
+in the intro course we show the youtube video using an iframe and that works fine (using a Python cell though)
 
 ```{code-cell} ipython3
-import matplotlib.pyplot as plt
-#%matplotlib notebook
-#%matplotlib widget
-%matplotlib ipympl
+---
+editable: true
+slideshow:
+  slide_type: ''
+tags: []
+---
+# optionally set hide-input on this cell
+
+from IPython.display import IFrame
+
+# Youtube
+IFrame(
+    "https://www.youtube.com/embed/i_ZcP7iNw-U?rel=0&amp;controls=0&amp;showinfo=0",
+    width="600",
+    height="400",
+    # extras='frameborder="0" allowfullscreen',
+)
 ```
 
-```{code-cell} ipython3
-plt.figure()
-plt.plot(X, Y);
-```
-
-+++ {"tags": ["framed_cell"]}
++++ {"tags": ["framed_cell"], "editable": true, "slideshow": {"slide_type": ""}}
 
 ## references
 

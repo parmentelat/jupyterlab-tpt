@@ -25,3 +25,9 @@
 .cell-tag-hide-input.cell-tag-hide-output::before {
     content: url(noin-noout.svg)
 }
+
+/* -- tmp -- */
+:root: {
+    --jp-notebook-toolbar-margin-bottom: 0px !important;
+    --jp-notebook-max-width: 5000px !important;
+}
