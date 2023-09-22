@@ -21,7 +21,7 @@ nbhosting:
   title: OS & terminal
 ---
 
-Licence CC BY-NC-ND, Thierry Parmentelat & Valérie Roy
+Licence CC BY-NC-ND, Thierry Parmentelat
 
 ```{code-cell}
 :tags: [raises-exception]

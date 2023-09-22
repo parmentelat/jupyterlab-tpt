@@ -25,7 +25,7 @@
 # ---
 
 # %% [markdown]
-# Licence CC BY-NC-ND, Valérie Roy & Thierry Parmentelat
+# Licence CC BY-NC-ND, Thierry Parmentelat
 
 # %%
 from IPython.display import HTML

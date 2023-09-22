@@ -123,3 +123,6 @@ dmypy.json
 
 .yarn/
 _build/
+.github/
+.macnb/
+.jupyter

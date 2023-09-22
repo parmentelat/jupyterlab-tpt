@@ -8,5 +8,5 @@ parts:
   - file: 1-01-numpy-introduction-nb
 - caption: sandbox chapter
   chapters:
-  - file: sandbox-nb
+  - glob: sandbox-[0-9]*-nb
 root: 0-00-intro-nb

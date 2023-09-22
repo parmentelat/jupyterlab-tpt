@@ -1,8 +1,8 @@
 # Jupyter Book settings
 
-title: Juyter & book
-author: Thierry Parmentelat & Valérie Roy
-#logo: media/logo-python.svg
+title: Jupyter & book
+author: Thierry Parmentelat
+logo: media/jupyter-book-logo-wide.svg
 
 repository:
   url: https://github.com/parmentelat/jupyterlab-tpt
