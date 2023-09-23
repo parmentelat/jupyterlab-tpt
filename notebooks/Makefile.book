@@ -1,4 +1,0 @@
-book:
-	jupyter-book build .
-
-.PHONY: book
