@@ -133,14 +133,14 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: 'hide input for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input(cell, true))
     })
-    palette.addItem({ command, category: 'Convenience' })
+    palette.addItem({ command, category: 'convenience' })
 
     command = 'convenience:show-input'
     app.commands.addCommand(command, {
       label: 'show input for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_input(cell, false))
     })
-    palette.addItem({ command, category: 'Convenience' })
+    palette.addItem({ command, category: 'convenience' })
     app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 9'], selector: '.jp-Notebook' })
 
     command = 'convenience:toggle-show-input'
@@ -148,7 +148,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: 'toggle show input for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => toggle_hide_input(cell))
     })
-    palette.addItem({ command, category: 'Convenience' })
+    palette.addItem({ command, category: 'convenience' })
     app.commands.addKeyBinding({ command, keys: ['Alt Cmd 9'], selector: '.jp-Notebook' })
 
     command = 'convenience:hide-output'
@@ -156,14 +156,14 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: 'hide output for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_output(cell, true))
     })
-    palette.addItem({ command, category: 'Convenience' })
+    palette.addItem({ command, category: 'convenience' })
 
     command = 'convenience:show-output'
     app.commands.addCommand(command, {
       label: 'show output for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => set_hide_output(cell, false))
     })
-    palette.addItem({ command, category: 'Convenience' })
+    palette.addItem({ command, category: 'convenience' })
     app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 0'], selector: '.jp-Notebook' })
 
     command = 'convenience:toggle-show-output'
@@ -171,7 +171,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: 'toggle show output for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => toggle_hide_output(cell))
     })
-    palette.addItem({ command, category: 'Convenience' })
+    palette.addItem({ command, category: 'convenience' })
     app.commands.addKeyBinding({ command, keys: ['Alt Cmd 0'], selector: '.jp-Notebook' })
 
 
@@ -180,7 +180,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: `hide input for all code cells that contain ${NEEDLE}`,
       execute: () => apply_on_cells(notebookTracker, Scope.All, (cell) => set_hide_input_needle(cell, true))
     })
-    palette.addItem({ command, category: 'Convenience' })
+    palette.addItem({ command, category: 'convenience' })
     app.commands.addKeyBinding({ command, keys: ['Alt Cmd 8'], selector: '.jp-Notebook' })
 
     command = 'convenience:show-input-all-samples'
@@ -188,7 +188,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: `show input for all code cells that contain ${NEEDLE}`,
       execute: () => apply_on_cells(notebookTracker, Scope.All, (cell) => set_hide_input_needle(cell, false))
     })
-    palette.addItem({ command, category: 'Convenience' })
+    palette.addItem({ command, category: 'convenience' })
     app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 8'], selector: '.jp-Notebook' })
 
 
@@ -204,7 +204,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
           make_text_and_insert_section(notebook, depth)
         }
       })
-      palette.addItem({ command, category: 'Convenience' })
+      palette.addItem({ command, category: 'convenience' })
       app.commands.addKeyBinding({ command, keys: [`Ctrl ${depth}`], selector: '.jp-Notebook' })
     }
 
@@ -219,7 +219,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: 'unrender all markdown cells',
       execute: () => apply_on_cells(notebookTracker, Scope.All, unrender_markdown)
     })
-    palette.addItem({ command, category: 'Convenience' })
+    palette.addItem({ command, category: 'convenience' })
     // control-e means end of ine if in edit mode
     app.commands.addKeyBinding({ command, keys: ['Ctrl E'], selector: '.jp-Notebook.jp-mod-commandMode' })
 
@@ -234,7 +234,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: 'toggle raises-exception for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => toggle_tag(cell, 'raises-exception')),
     })
-    palette.addItem({ command, category: 'Convenience' })
+    palette.addItem({ command, category: 'convenience' })
     app.commands.addKeyBinding({ command, keys: ['Alt Cmd 6'], selector: '.jp-Notebook' })
 
 
@@ -243,7 +243,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: 'set raises-exception for all selected cells',
       execute: () => apply_on_cells(notebookTracker, Scope.Multiple, (cell) => md_insert(cell, 'tags', 'raises-exception')),
     })
-    palette.addItem({ command, category: 'Convenience' })
+    palette.addItem({ command, category: 'convenience' })
     app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 6'], selector: '.jp-Notebook' })
   }
 }
