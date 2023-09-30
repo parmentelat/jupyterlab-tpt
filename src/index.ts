@@ -160,7 +160,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       execute: () => console.log(`Current settings: limit = ${limit} (type=${typeof limit}) and flag = ${flag}`)
     })
     palette.addItem({ command, category: 'Convenience' })
-    app.commands.addKeyBinding({ command, keys: ['Alt Cmd 7'], selector: '.jp-Notebook' })
+    // app.commands.addKeyBinding({ command, keys: ['Alt Cmd 7'], selector: '.jp-Notebook' })
 
 
     command = 'convenience:hide-input'
