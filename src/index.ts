@@ -32,6 +32,9 @@ import { ISettingRegistry } from '@jupyterlab/settingregistry'
 
 import { Scope, apply_on_cells } from 'jupyterlab-celltagsclasses'
 
+
+const PLUGIN_ID = 'jupyterlab-tpt:plugin'
+
 /*
 in order to have consistent behaviour between
 classic notebook (with the hide-input extension enabled)
@@ -101,8 +104,6 @@ const toggle_tag = (cell: Cell, tag: string) => {
     md_insert(cell, 'tags', tag)
   }
 }
-const PLUGIN_ID = 'jupyterlab-tpt:plugin'
-
 /**
  * Initialization data for the jupyterlab-tpt extension.
  */
@@ -136,12 +137,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     function loadSetting(setting: ISettingRegistry.ISettings): void {
       // Read the settings and convert to the correct type
-      limit = setting.get('limit').composite as number;
-      flag = setting.get('flag').composite as boolean;
+      limit = setting.get('limit').composite as number
+      flag = setting.get('flag').composite as boolean
 
       console.log(
         `Settings Example extension: Limit is set to '${limit}' and flag to '${flag}'`
-      );
+      )
     }
 
     Promise.all([app.restored, settingRegistry.load(PLUGIN_ID)])
