@@ -91,30 +91,6 @@ const make_text_and_insert_section = (notebook: Notebook, depth: number) => {
   model.sharedModel.setSource(`${'#'.repeat(depth)} ${model.sharedModel.getSource()}`)
 }
 
-const clean_cell_metadata = (cell: Cell) => {
-  console.log("Cleaning metadata for cell", cell)
-  const editable = cell.model.getMetadata('editable')
-  if (editable === true) {
-    md_unset(cell, 'editable')
-  }
-  const tags = cell.model.getMetadata('tags')
-  if (tags?.length === 0) {
-    md_unset(cell, 'tags')
-  }
-  const slide_type = md_get(cell, 'slideshow.slide_type')
-  if (slide_type === '') {
-    md_unset(cell, 'slideshow.slide_type')
-  }
-  const slideshow = md_get(cell, 'slideshow')
-  if ((slideshow !== undefined) && (JSON.stringify(slideshow) == '{}')) {
-    md_unset(cell, 'slideshow')
-  }
-  const user_expressions = md_get(cell, 'user_expressions')
-  if (user_expressions?.length === 0) {
-    md_unset(cell, 'user_expressions')
-  }
-}
-
 const toggle_tag = (cell: Cell, tag: string) => {
   if (md_get(cell, 'tags', tag)) {
     md_remove(cell, 'tags', tag)
@@ -214,24 +190,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     })
     palette.addItem({ command, category: 'Convenience' })
     app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 8'], selector: '.jp-Notebook' })
-
-
-    command = 'convenience:metadata-clean-selected'
-    app.commands.addCommand(command, {
-      label: `clean metadata for all selected cells`,
-      execute: () => apply_on_cells(notebookTracker, Scope.Multiple, clean_cell_metadata)
-    })
-    palette.addItem({ command, category: 'Convenience' })
-    app.commands.addKeyBinding({ command, keys: ['Alt Cmd 7'], selector: '.jp-Notebook' })
-
-
-    command = 'convenience:metadata-clean-all'
-    app.commands.addCommand(command, {
-      label: `clean metadata for all cells`,
-      execute: () => apply_on_cells(notebookTracker, Scope.All, clean_cell_metadata)
-    })
-    palette.addItem({ command, category: 'Convenience' })
-    app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 7'], selector: '.jp-Notebook' })
 
 
     // Ctrl-0 to Ctrl-4 to set markdown sections
