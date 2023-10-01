@@ -362,31 +362,33 @@ const plugin: JupyterFrontEndPlugin<void> = {
       selector: '.jp-Notebook'
     })
 
-  const apply_outline_selected_cells = (outline_selected_cells: boolean) => {
-    const id = 'outline-selected-cells-style'
-    const present = document.getElementById(id)
-    // already good
-    if ((outline_selected_cells && present)
-        || (!outline_selected_cells && !present)) {
-      return
-    }
-    // need to inject
-    if (outline_selected_cells) {
-      console.log("injecting css for outlining selection")
-      const inject_css = (css_text: string, id: string) => {
-        const style = document.createElement('style')
-        style.setAttribute('type', 'text/css')
-        style.id = id
-        style.appendChild(document.createTextNode(css_text))
-        document.body.appendChild(style)
+    const apply_outline_selected_cells = (outline_selected_cells: boolean) => {
+      const id = 'outline-selected-cells-style'
+      const present = document.getElementById(id)
+      // already good
+      if (
+        (outline_selected_cells && present) ||
+        (!outline_selected_cells && !present)
+      ) {
+        return
       }
-      inject_css(selectedCellsCss, id)
-    } else {
-      console.log("removing css for outlining selection")
-      present?.remove()
+      // need to inject
+      if (outline_selected_cells) {
+        console.log('injecting css for outlining selection')
+        const inject_css = (css_text: string, id: string) => {
+          const style = document.createElement('style')
+          style.setAttribute('type', 'text/css')
+          style.id = id
+          style.appendChild(document.createTextNode(css_text))
+          document.body.appendChild(style)
+        }
+        inject_css(selectedCellsCss, id)
+      } else {
+        console.log('removing css for outlining selection')
+        present?.remove()
+      }
     }
-  }
-  function loadSetting(setting: ISettingRegistry.ISettings): void {
+    function loadSetting(setting: ISettingRegistry.ISettings): void {
       // Read the settings and convert to the correct type
       outline_selected_cells = setting.get('outline_selected_cells')
         .composite as boolean
