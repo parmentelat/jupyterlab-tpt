@@ -32,25 +32,25 @@ type `convenience` in the command palette to see the list of commands
 
 Remember that Alt = Option on the mac
 
-| keystroke | command | what |
-|-:|:-:|:-|
-| Alt-Cmd-0 | `convenience:toggle-show-input` | hide or show output on selected cells |
-| Ctrl-Alt-0 | `convenience:show-input` | show output on selected cells |
-| Alt-Cmd-9 | `convenience:toggle-show-input` | hide or show input on selected cells |
-| Ctrl-Alt-9 | `convenience:show-input` | show input on selected cells |
-| Alt-Cmd-8 | `convenience:hide-input-all-samples` | hide input on all code cells with `tools.sample_from` |
-| Ctrl-Alt-8 | `convenience:show-input-all-samples` | hide input on all code cells with `tools.sample_from` |
-| Alt-Cmd-6 | `convenience:toggle-raises-exception` | toggle the `raises-exception` tag |
-| Ctrl-Alt-6 | `convenience:set-raises-exception` | set the `raises-exception` tag |
-| Ctrl-0 | `convenience:section-level-0` | remove section header (#s) |
-| Ctrl-1 | `convenience:section-level-1` | set as section 1 header |
-| Ctrl-2 |
-| Ctrl-3 |
-| Ctrl-4 | `convenience:section-level-4` | set as section 4 header |
-| Ctrl-e | `convenience:unrender-all-markdown` | unrender all markdown cells |
-| Ctrl-w | `notebook:render-all-markdown` | render all markdown cells |
-| u | `notebook:move-cell-up` |
-| d | `notebook:move-cell-down` |
+|  keystroke |                command                | what                                                  |
+| ---------: | :-----------------------------------: | :---------------------------------------------------- |
+|  Alt-Cmd-0 |    `convenience:toggle-show-input`    | hide or show output on selected cells                 |
+| Ctrl-Alt-0 |       `convenience:show-input`        | show output on selected cells                         |
+|  Alt-Cmd-9 |    `convenience:toggle-show-input`    | hide or show input on selected cells                  |
+| Ctrl-Alt-9 |       `convenience:show-input`        | show input on selected cells                          |
+|  Alt-Cmd-8 | `convenience:hide-input-all-samples`  | hide input on all code cells with `tools.sample_from` |
+| Ctrl-Alt-8 | `convenience:show-input-all-samples`  | hide input on all code cells with `tools.sample_from` |
+|  Alt-Cmd-6 | `convenience:toggle-raises-exception` | toggle the `raises-exception` tag                     |
+| Ctrl-Alt-6 |  `convenience:set-raises-exception`   | set the `raises-exception` tag                        |
+|     Ctrl-0 |     `convenience:section-level-0`     | remove section header (#s)                            |
+|     Ctrl-1 |     `convenience:section-level-1`     | set as section 1 header                               |
+|     Ctrl-2 |
+|     Ctrl-3 |
+|     Ctrl-4 |     `convenience:section-level-4`     | set as section 4 header                               |
+|     Ctrl-e |  `convenience:unrender-all-markdown`  | unrender all markdown cells                           |
+|     Ctrl-w |    `notebook:render-all-markdown`     | render all markdown cells                             |
+|          u |        `notebook:move-cell-up`        |
+|          d |       `notebook:move-cell-down`       |
 
 ## `using cell tags`
 
@@ -59,7 +59,7 @@ thanks to the `jupyterlab-celltagsclasses` extension, each cell has its widget
 after using 'Alt-Cmd-9', the current cell will have class `cell-tag-hide-input`
 added
 
-for the record, in nb-courselevels - i.e. in the classic notebook - we had set `data-tag-basic=true`; 
+for the record, in nb-courselevels - i.e. in the classic notebook - we had set `data-tag-basic=true`;
 it does not matter much if we don't follow the same convention here
 
 ## Development
@@ -116,13 +116,13 @@ See [RELEASE](RELEASE.md)
 
 # My notes
 
-* on using signals
+- on using signals
   <https://github.com/jupyterlab/extension-examples/tree/master/signals>
 
-* a very useful example of arming callbacks on changes
+- a very useful example of arming callbacks on changes
   // https://discourse.jupyter.org/t/how-to-get-output-model-for-a-given-cell-in-a-jupyterlab-extension/11342/6
 
-* waiting for a notebook context to be ready
+- waiting for a notebook context to be ready
   ```js
   notebookContext: DocumentRegistry.IContext<INotebookModel>
   notebookContext.ready.then(() => {
