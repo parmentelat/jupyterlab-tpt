@@ -2,16 +2,10 @@
     "title": "TPT custom extension",
     "description": "Settings of the jupyterlab-tpt extension.",
     "properties": {
-      "limit": {
-        "type": "integer",
-        "title": "Limit",
-        "description": "This is an example of an integer setting.",
-        "default": 25
-      },
-      "flag": {
+      "outline_selected_cells": {
         "type": "boolean",
-        "title": "Simple flag",
-        "description": "This is an example of a boolean setting.",
+        "title": "outline selection",
+        "description": "outillne selection with a background pattern; helpful with colored cells from courselevels",
         "default": false
       }
     },

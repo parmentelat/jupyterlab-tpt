@@ -32,6 +32,7 @@ import { ISettingRegistry } from '@jupyterlab/settingregistry'
 
 import { Scope, apply_on_cells } from 'jupyterlab-celltagsclasses'
 
+import selectedCellsCss from '../style/selected_cells.raw.css'
 
 const PLUGIN_ID = 'jupyterlab-tpt:plugin'
 
@@ -133,23 +134,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     // Cmd modifier is ignored on non-Mac platforms.
     // Alt is option on mac
 
-    let [limit, flag] = [0, false]
-
-    function loadSetting(setting: ISettingRegistry.ISettings): void {
-      // Read the settings and convert to the correct type
-      limit = setting.get('limit').composite as number
-      flag = setting.get('flag').composite as boolean
-
-      console.log(
-        `Settings Example extension: Limit is set to '${limit}' and flag to '${flag}'`
-      )
-    }
-
-    Promise.all([app.restored, settingRegistry.load(PLUGIN_ID)])
-    .then(([_, setting]) => {
-      loadSetting(setting)
-      setting.changed.connect(loadSetting)
-    })
+    let [outline_selected_cells] = [false]
 
     let command
 
@@ -158,7 +143,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     command = 'convenience:show-settings'
     app.commands.addCommand(command, {
       label: 'show settings',
-      execute: () => console.log(`Current settings: limit = ${limit} (type=${typeof limit}) and flag = ${flag}`)
+      execute: () => console.log(`Current settings: outline_selected_cells = ${outline_selected_cells}`)
     })
     palette.addItem({ command, category: 'Convenience' })
     // app.commands.addKeyBinding({ command, keys: ['Alt Cmd 7'], selector: '.jp-Notebook' })
@@ -281,6 +266,32 @@ const plugin: JupyterFrontEndPlugin<void> = {
     })
     palette.addItem({ command, category: 'convenience' })
     app.commands.addKeyBinding({ command, keys: ['Ctrl Alt 6'], selector: '.jp-Notebook' })
+
+
+
+    function loadSetting(setting: ISettingRegistry.ISettings): void {
+      // Read the settings and convert to the correct type
+      outline_selected_cells = setting.get('outline_selected_cells').composite as boolean
+
+      console.log( `tpt extension, outline_selected is read as ${outline_selected_cells}` )
+      if (outline_selected_cells) {
+        const inject_css = (css_text: string) => {
+          const style = document.createElement('style')
+          style.setAttribute('type', 'text/css')
+          style.appendChild(document.createTextNode(css_text))
+          document.body.appendChild(style)
+        }
+        inject_css(selectedCellsCss)
+      }
+    }
+
+    Promise.all([app.restored, settingRegistry.load(PLUGIN_ID)])
+    .then(([_, setting]) => {
+      loadSetting(setting)
+      setting.changed.connect(loadSetting)
+    })
+
+
   }
 }
 
