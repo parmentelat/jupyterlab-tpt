@@ -362,7 +362,31 @@ const plugin: JupyterFrontEndPlugin<void> = {
       selector: '.jp-Notebook'
     })
 
-    function loadSetting(setting: ISettingRegistry.ISettings): void {
+  const apply_outline_selected_cells = (outline_selected_cells: boolean) => {
+    const id = 'outline-selected-cells-style'
+    const present = document.getElementById(id)
+    // already good
+    if ((outline_selected_cells && present)
+        || (!outline_selected_cells && !present)) {
+      return
+    }
+    // need to inject
+    if (outline_selected_cells) {
+      console.log("injecting css for outlining selection")
+      const inject_css = (css_text: string, id: string) => {
+        const style = document.createElement('style')
+        style.setAttribute('type', 'text/css')
+        style.id = id
+        style.appendChild(document.createTextNode(css_text))
+        document.body.appendChild(style)
+      }
+      inject_css(selectedCellsCss, id)
+    } else {
+      console.log("removing css for outlining selection")
+      present?.remove()
+    }
+  }
+  function loadSetting(setting: ISettingRegistry.ISettings): void {
       // Read the settings and convert to the correct type
       outline_selected_cells = setting.get('outline_selected_cells')
         .composite as boolean
@@ -370,15 +394,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       console.log(
         `tpt extension, outline_selected is read as ${outline_selected_cells}`
       )
-      if (outline_selected_cells) {
-        const inject_css = (css_text: string) => {
-          const style = document.createElement('style')
-          style.setAttribute('type', 'text/css')
-          style.appendChild(document.createTextNode(css_text))
-          document.body.appendChild(style)
-        }
-        inject_css(selectedCellsCss)
-      }
+      apply_outline_selected_cells(outline_selected_cells)
     }
 
     Promise.all([app.restored, settingRegistry.load(PLUGIN_ID)]).then(
