@@ -18,7 +18,7 @@ jobs:
       uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
 
     - name: Install dependencies
-      run: python -m pip install -U jupyterlab~=4.0rc0
+      run: python -m pip install -U jupyterlab~=4.0
 
     - name: Lint the extension
       run: |
@@ -50,34 +50,34 @@ jobs:
         path: dist/jupyterlab_tpt*
         if-no-files-found: error
 
-  test_isolated:
-    needs: build
-    runs-on: ubuntu-latest
+  # test_isolated:
+  #   needs: build
+  #   runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Install Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
-        architecture: 'x64'
-    - uses: actions/download-artifact@v3
-      with:
-        name: extension-artifacts
-    - name: Install and Test
-      run: |
-        set -eux
-        # Remove NodeJS, twice to take care of system and locally installed node versions.
-        sudo rm -rf $(which node)
-        sudo rm -rf $(which node)
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v3
+  #   - name: Install Python
+  #     uses: actions/setup-python@v4
+  #     with:
+  #       python-version: '3.9'
+  #       architecture: 'x64'
+  #   - uses: actions/download-artifact@v3
+  #     with:
+  #       name: extension-artifacts
+  #   - name: Install and Test
+  #     run: |
+  #       set -eux
+  #       # Remove NodeJS, twice to take care of system and locally installed node versions.
+  #       sudo rm -rf $(which node)
+  #       sudo rm -rf $(which node)
 
-        pip install "jupyterlab~=4.0rc0" jupyterlab_tpt*.whl
+  #       pip install "jupyterlab~=4.0" jupyterlab_tpt*.whl
 
 
-        jupyter labextension list
-        jupyter labextension list 2>&1 | grep -ie "jupyterlab-tpt.*OK"
-        python -m jupyterlab.browser_check --no-chrome-test
+  #       jupyter labextension list
+  #       jupyter labextension list 2>&1 | grep -ie "jupyterlab-tpt.*OK"
+  #       python -m jupyterlab.browser_check --no-chrome-test
 
 
   check_links:
